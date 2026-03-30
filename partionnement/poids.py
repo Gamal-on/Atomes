@@ -114,7 +114,11 @@ def get_all_mo(filepath: str):
     mo_numbers = sorted(mo_coeffs.keys())
     all_coeffs = np.array([mo_coeffs[i] for i in mo_numbers])
 
-    return gaussienne, all_coeffs, mo_numbers
+    # Tableau final : ligne 0 = exposants, lignes suivantes = coefficients de chaque MO
+    # shape : (1 + nb_MO, N)
+    tableau_final = np.vstack([gaussienne, all_coeffs])
+
+    return gaussienne, all_coeffs, mo_numbers, tableau_final
 
 
 # ------------------------------------------------------------------
@@ -142,7 +146,7 @@ if __name__ == "__main__":
 
         else:
             # --- Toutes les MO ---
-            gaussienne, all_coeffs, mo_numbers = get_all_mo(fichier)
+            gaussienne, all_coeffs, mo_numbers, tableau_final = get_all_mo(fichier)
             print(f"\nNombre de gaussiennes : {len(gaussienne)}")
             print(f"Exposants (alpha_j) :\n{gaussienne}\n")
             print(f"{'='*60}")
@@ -150,7 +154,14 @@ if __name__ == "__main__":
                 print(f"\nMO {mo_num} — coefficients (a_j) :")
                 print(all_coeffs[idx])
                 print(f"{'='*60}")
+            print(f"\nTableau final (ligne 0 = exposants, lignes suivantes = coefficients MO) :")
+            print(f"Shape : {tableau_final.shape}")
+            print(tableau_final)
 
     except (ValueError, KeyError, FileNotFoundError) as e:
         print(f"Erreur : {e}")
         sys.exit(1)
+
+
+# renvoie un tableau de tableau avec en 1er les coeffs des exposants des gaussiennes,
+# et ensuite les coeffs de chaque MO, dans l'ordre des MO (MO1, MO2, ...)
