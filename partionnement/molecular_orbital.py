@@ -1,22 +1,6 @@
 import numpy as np
 
 
-def molecular_orbitals(position, molecular_orbitals_coefficients, gaussian_exponents):
-    """
-    Return each electronic orbital of the molecule, as the sum of ..
-    r : 1D-nparray of the position
-    """
-    l = len(gaussian_exponents)
-    nb_mo = molecular_orbitals_coefficients.shape[0]
-    # Il faut faire un test molecular_coefficients.shape[1] == l
-
-    for i in range(0, nb_mo) :
-        for i in range (0,l) :
-            for r in position : 
-    
-    return molecular_orbitals
-
-
 def molecular_orbitals(position, mo_coefficients, gaussian_exponents):
     """
     Calcule les orbitales moléculaires comme une somme de gaussiennes.
@@ -30,10 +14,10 @@ def molecular_orbitals(position, mo_coefficients, gaussian_exponents):
     - Un tableau 2D de taille (M, N) contenant les valeurs des orbitales.
     """
     # Test coherent 
-    if mo_coefficients.shape[1] != len(gaussian_exponents):
-        raise ValueError(
-            f"Incohérence : {mo_coefficients.shape[1]} coeffs mais {len(gaussian_exponents)} exposants !"
-        )
+    # if mo_coefficients.shape[1] != len(gaussian_exponents):
+      #  raise ValueError(
+        #    f"Incohérence : {mo_coefficients.shape[1]} coeffs mais {len(gaussian_exponents)} exposants !"
+       # )
     
     # On calcule toutes les gaussiennes pour toutes les positions d'un coup
     gaussians = np.exp(-gaussian_exponents[:, np.newaxis] * (position**2)[np.newaxis, :])
@@ -46,10 +30,10 @@ def molecular_orbitals(position, mo_coefficients, gaussian_exponents):
 
 def main() :
     position = np.arange(0, 2e-10, 1e-12)
-    gaussian = np.array([0, 1e-1])
-    mo_coefficients = np.array([1, 1])
-    molecular_orbitals = molecular_orbitals(position, mo_coefficients, gaussian)
-    print(molecular_orbitals)
+    gaussian = np.array([0.1888, 0.188886, 0.18889, 0.188887])
+    mo_coefficients = np.array([[1, 1, 1, 1], [2, 2, 2, 2]])
+    result = molecular_orbitals(position, mo_coefficients, gaussian)
+    print(result, len(position), len(result))
 
 if __name__ == "__main__"  :
-    main       
+    main()
