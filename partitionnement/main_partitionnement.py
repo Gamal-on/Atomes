@@ -14,11 +14,12 @@ def molecular_orbital_calcul(position, fichier):
 def plot_result(position, orbital) :
     plt.figure()
     plt.grid(True)
-    for i in orbital : 
-        plt.plot(position, i, ".", label=i)
+    for i in range(0, len(orbital)) : 
+        plt.plot(position, orbital[i], ".", label=f"orbital {i}")
         plt.xlabel("Position, en Bohr radius")
         plt.ylabel("Densités électroniques")
         i+=1 
+    plt.legend()
     plt.show()
 
 def main():
@@ -28,7 +29,7 @@ def main():
 
     args = parser.parse_args()
     
-    position = np.arange(0, 3, 1e-3) # Attention : valeurs multiples de rayon de Bohr
+    position = np.arange(-2, 2, 1e-3) # Attention : valeurs multiples de rayon de Bohr
     
     score = molecular_orbital_calcul(position, args.filepath)
     plot_result(position, score)
