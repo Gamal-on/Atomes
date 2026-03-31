@@ -3,6 +3,8 @@ import re
 import sys
 
 
+
+#lecture du fichier
 def lire_fichier(filepath: str):
     with open(filepath, "r") as f:
         lines = f.readlines()
@@ -13,21 +15,22 @@ def lire_fichier(filepath: str):
     current_mo = None
     current_vals = []
 
+# On parcourt ligne par ligne pour extraire les données voulues (exposants et coefficients)
     for line in lines:
         stripped = line.strip()
         if not stripped:
             continue
 
-        if stripped.upper().startswith("END DATA"):
+        if stripped.upper().startswith("END DATA"): #On arrête la lecture dès qu'on rencontre "END DATA" dans le fichier texte
             break
 
         if stripped.upper().startswith("EXPONENTS"):
-            after = stripped[len("EXPONENTS"):].strip()
+            after = stripped[len("EXPONENTS"):].strip() # On récupère tout ce qui suit "EXPONENTS" sur la même ligne, puis on continue à lire les lignes suivantes pour compléter les exposants jusqu'à ce qu'on rencontre une ligne qui ne contient pas de nombre
             gaussienne_vals.extend(after.split())
             current_mo = None
             continue
 
-        mo_match = re.match(r"^MO\s+(\d+)", stripped, re.IGNORECASE)
+        mo_match = re.match(r"^MO\s+(\d+)", stripped, re.IGNORECASE) # On cherche les lignes qui commencent par "MO" (molecular orbital)
         if mo_match:
             if current_mo is not None and current_vals:
                 mo_coeffs[current_mo] = np.array([float(v) for v in current_vals])
@@ -36,7 +39,7 @@ def lire_fichier(filepath: str):
             continue
 
         if current_mo is not None:
-            tokens = stripped.split()
+            tokens = stripped.split() 
             try:
                 [float(t) for t in tokens]
                 current_vals.extend(tokens)
@@ -45,40 +48,34 @@ def lire_fichier(filepath: str):
             continue
 
     if current_mo is not None and current_vals:
-        mo_coeffs[current_mo] = np.array([float(v) for v in current_vals])
+        mo_coeffs[current_mo] = np.array([float(v) for v in current_vals]) # On ajoute les coefficients de la dernière MO lue, si elle existe
 
-    if not gaussienne_vals:
+    if not gaussienne_vals: # Si on n'a pas trouvé de ligne "EXPONENTS", c'est une erreur
         raise ValueError("Mot-clé 'EXPONENTS' introuvable dans le fichier.")
-    if not mo_coeffs:
+    if not mo_coeffs: # Si on n'a pas trouvé de ligne "MO i", c'est une erreur
         raise ValueError("Aucun bloc 'MO i' trouvé dans le fichier.")
 
-    gaussienne = np.array([float(v) for v in gaussienne_vals])
+    gaussienne = np.array([float(v) for v in gaussienne_vals]) # On convertit les exposants en tableau numpy de float
     return gaussienne, mo_coeffs
 
 
-def get_mo(filepath: str, mo_number: int):
-    """
-    Retourne les exposants et les coefficients pour une MO donnée.
+def get_mo(filepath: str, mo_number: int): # On demande à l'utilisateur de spécifier le numéro de la MO qu'il souhaite récupérer, et on vérifie que ce numéro existe bien dans les données extraites du fichier
 
-    Paramètres
-    ----------
+    """
+
     filepath  : chemin vers le fichier texte
     mo_number : numéro entier de la MO souhaitée
 
-    Retourne
-    --------
-    gaussienne : np.ndarray  -- exposants alpha_j
-    coeff_lin  : np.ndarray  -- coefficients a_j pour la MO demandée
     """
-    gaussienne, mo_coeffs = lire_fichier(filepath)
+    gaussienne, mo_coeffs = lire_fichier(filepath)  
 
-    if mo_number not in mo_coeffs:
+    if mo_number not in mo_coeffs: 
         mos_dispo = sorted(mo_coeffs.keys())
         raise KeyError(
             f"MO {mo_number} introuvable. MO disponibles : {mos_dispo}"
         )
 
-    coeff_lin = mo_coeffs[mo_number]
+    coeff_lin = mo_coeffs[mo_number] 
 
     if gaussienne.shape != coeff_lin.shape:
         raise ValueError(
@@ -89,54 +86,36 @@ def get_mo(filepath: str, mo_number: int):
     return gaussienne, coeff_lin
 
 
-def get_all_mo(filepath: str):
-    """
-    Retourne les exposants et les coefficients de toutes les MO.
+def get_all_mo(filepath: str): # On récupère les exposants et les coefficients de toutes les MO
 
-    Paramètres
-    ----------
+    """
+
     filepath : chemin vers le fichier texte
 
-    Retourne
-    --------
-    gaussienne : np.ndarray de shape (N,)
-                 exposants alpha_j communs à toutes les MO
-
-    all_coeffs : np.ndarray de shape (nb_MO, N)
-                 all_coeffs[i] contient les coefficients a_j de la MO i+1
-                 (les lignes sont ordonnées par numéro de MO croissant)
-
-    mo_numbers : list[int]
-                 liste des numéros de MO dans le même ordre que all_coeffs
     """
     gaussienne, mo_coeffs = lire_fichier(filepath)
 
     mo_numbers = sorted(mo_coeffs.keys())
     all_coeffs = np.array([mo_coeffs[i] for i in mo_numbers])
 
-    # Tableau final : ligne 0 = exposants, lignes suivantes = coefficients de chaque MO
-    # shape : (1 + nb_MO, N)
+    # tableau final : ligne 0 = exposants, lignes suivantes = coefficients de chaque MO
+    # taille : (1 + nb_MO, N)
     tableau_final = np.vstack([gaussienne, all_coeffs])
 
     return gaussienne, all_coeffs, mo_numbers, tableau_final
 
 
-# ------------------------------------------------------------------
-# Point d'entrée CLI
-# Usage : python parse_gaussian.py <fichier.txt> [numéro_MO]
-#   - sans numéro : affiche toutes les MO
-#   - avec numéro : affiche uniquement cette MO
-# ------------------------------------------------------------------
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage : python parse_gaussian.py <fichier.txt> [numéro_MO]")
         sys.exit(1)
 
+
     fichier = sys.argv[1]
 
-    try:
+    try: 
         if len(sys.argv) >= 3:
-            # --- Une seule MO ---
+            # l'utilisateur a spécifié un numéro de MO, on affiche uniquement celle-ci
             num_mo = int(sys.argv[2])
             gaussienne, coeff_lin = get_mo(fichier, num_mo)
             print(f"\n=== MO {num_mo} ===")
@@ -145,8 +124,8 @@ if __name__ == "__main__":
             print(f"\nCoefficients (a_j)   :\n{coeff_lin}")
 
         else:
-            # --- Toutes les MO ---
-            gaussienne, all_coeffs, mo_numbers, tableau_final = get_all_mo(fichier)
+            # l'utilisateur n'a pas spécifié de numéro de MO donc on affiche toutes les MO
+            gaussienne, all_coeffs, mo_numbers, tableau_final = get_all_mo(fichier) 
             print(f"\nNombre de gaussiennes : {len(gaussienne)}")
             print(f"Exposants (alpha_j) :\n{gaussienne}\n")
             print(f"{'='*60}")
