@@ -8,7 +8,7 @@ def test_molecular_orbitals():
     r1 = position[0]
 
     # Experimental result
-    result_exp = molecular_orbitals(r1, mo_coefficients, gaussian)
+    result_exp = molecular_orbitals(position, mo_coefficients, gaussian)
 
     # Theorical result
     term1 = (8.25e-1)*np.exp(-(5.48e3)*(r1)**2)
@@ -16,5 +16,4 @@ def test_molecular_orbitals():
     term3 = (2.45)*np.exp(-(1.88e2)*(r1)**2)
     result_th = term1 + term2 + term3
 
-    # Test
-    assert result_exp  == result_th
+    assert result_th == result_exp[0,0]
