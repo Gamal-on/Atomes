@@ -1,4 +1,4 @@
-from molecular_orbital import molecular_orbitals
+from partitionnement.molecular_density.molecular_orbital import molecular_orbitals
 import numpy as np
 
 def test_molecular_orbitals():

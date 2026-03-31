@@ -105,42 +105,8 @@ def get_all_mo(filepath: str): # On récupère les exposants et les coefficients
     return gaussienne, all_coeffs, mo_numbers, tableau_final
 
 
+
+
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage : python parse_gaussian.py <fichier.txt> [numéro_MO]")
-        sys.exit(1)
+    get_all_mo()
 
-
-    fichier = sys.argv[1]
-
-    try: 
-        if len(sys.argv) >= 3:
-            # l'utilisateur a spécifié un numéro de MO, on affiche uniquement celle-ci
-            num_mo = int(sys.argv[2])
-            gaussienne, coeff_lin = get_mo(fichier, num_mo)
-            print(f"\n=== MO {num_mo} ===")
-            print(f"Nombre de gaussiennes : {len(gaussienne)}")
-            print(f"\nExposants  (alpha_j) :\n{gaussienne}")
-            print(f"\nCoefficients (a_j)   :\n{coeff_lin}")
-
-        else:
-            # l'utilisateur n'a pas spécifié de numéro de MO donc on affiche toutes les MO
-            gaussienne, all_coeffs, mo_numbers, tableau_final = get_all_mo(fichier) 
-            print(f"\nNombre de gaussiennes : {len(gaussienne)}")
-            print(f"Exposants (alpha_j) :\n{gaussienne}\n")
-            print(f"{'='*60}")
-            for idx, mo_num in enumerate(mo_numbers):
-                print(f"\nMO {mo_num} — coefficients (a_j) :")
-                print(all_coeffs[idx])
-                print(f"{'='*60}")
-            print(f"\nTableau final (ligne 0 = exposants, lignes suivantes = coefficients MO) :")
-            print(f"Shape : {tableau_final.shape}")
-            print(tableau_final)
-
-    except (ValueError, KeyError, FileNotFoundError) as e:
-        print(f"Erreur : {e}")
-        sys.exit(1)
-
-
-# renvoie un tableau de tableau avec en 1er les coeffs des exposants des gaussiennes,
-# et ensuite les coeffs de chaque MO, dans l'ordre des MO (MO1, MO2, ...)

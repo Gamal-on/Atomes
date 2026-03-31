@@ -3,15 +3,16 @@ import numpy as np
 
 def molecular_orbitals(position, mo_coefficients, gaussian_exponents):
     """
-    Calcule les orbitales moléculaires comme une somme de gaussiennes.
+    Compute the molecule’s Molecular Orbitals, 
+    from a basis of Gaussian functions, for a given position.
     
     Parameters:
-    - position : tableau 1D (taille N)
-    - mo_coefficients : tableau 2D (taille M, 36)
-    - gaussian_exponents : tableau 1D (taille 36)
+    - position: 1D array (size N) of atomic distances (unit: Bohr radius)
+    - mo_coefficients: 2D array (size M, 36), coefficients of the basis functions of the orbitals
+    - gaussian_exponents: 1D array (size 36), exponents of the Gaussian basis functions
     
     Returns:
-    - Un tableau 2D de taille (M, N) contenant les valeurs des orbitales.
+    - 2D array containing the values of the MOs for each position value.
     """
     # Test coherent 
     # if mo_coefficients.shape[1] != len(gaussian_exponents):
@@ -26,6 +27,7 @@ def molecular_orbitals(position, mo_coefficients, gaussian_exponents):
     molecular_orbitals = mo_coefficients @ gaussians
     
     return molecular_orbitals
+
 
 
 def main() :
