@@ -29,11 +29,8 @@ def molecular_orbitals(position, mo_coefficients, gaussian_exponents):
 
 
 def main() :
-    position = np.arange(0, 2e-10, 1e-12)
-    gaussian = np.array([1e20, 2e20, 3e20, 4e20])
-    mo_coefficients = np.array([[1, 1, 1, 1], [2, 2, 2, 2]])
-    result = molecular_orbitals(position, mo_coefficients, gaussian)
-    print(result, len(position), len(result))
+    pass
+
 
 if __name__ == "__main__"  :
     main()
