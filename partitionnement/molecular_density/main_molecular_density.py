@@ -3,8 +3,8 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import argparse
-from poids import get_all_mo
-from molecular_orbital import molecular_orbitals
+from partitionnement.molecular_density.data_read import get_all_mo
+from partitionnement.molecular_density.molecular_orbital import molecular_orbitals
 
 def molecular_orbital_calcul(position, fichier): 
     gaussian_exponents, coeff_molecular_orbital, _, _ = get_all_mo(fichier) 
