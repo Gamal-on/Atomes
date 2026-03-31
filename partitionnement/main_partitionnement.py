@@ -8,6 +8,10 @@ def molecular_orbital_calcul(position, fichier):
     molecular_orbital_somme = molecular_orbitals(position, coeff_molecular_orbital, gaussian_exponents)
     return molecular_orbital_somme
 
+def plot_result(position, orbital) : 
+    
+
+
 def main():
     parser = argparse.ArgumentParser(description="Calcul des orbitales moléculaires.")
     
@@ -17,12 +21,9 @@ def main():
     
     position_test = np.arange(0, 4, 1e-1) # Attention : valeurs multiples de rayon de Bohr
 
-    try:
-        score = molecular_orbital_calcul(position_test, args.filepath)
-        print(f"Résultat pour le fichier '{args.filepath}' :")
-        print(score)
-    except Exception as e:
-        print(f"Une erreur est survenue : {e}")
+    
+    score = molecular_orbital_calcul(position_test, args.filepath)
+    print(score)
 
 if __name__ == "__main__":
     main()
