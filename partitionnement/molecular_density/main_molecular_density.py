@@ -3,19 +3,30 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import argparse
-from partitionnement.molecular_density.data_read import get_all_mo
-from partitionnement.molecular_density.molecular_orbital import molecular_orbitals
+from data_read import get_all_mo
+from molecular_orbital import molecular_orbitals
 
 def molecular_orbital_calcul(position, fichier): 
+    """
+    Compute the probability densities of each molecular orbital,
+    for a given molecule, as a function of position.
+    Arguments : 
+    - position : 1D-ndarray 
+    Returns : 
+    - probability_denisties : 2D array of the proba densities for each orbital
+    - molecular_orbital : 2D array of the OM 
+    """
     gaussian_exponents, coeff_molecular_orbital, _, _ = get_all_mo(fichier) 
     molecular_orbital_somme = molecular_orbitals(position, coeff_molecular_orbital, gaussian_exponents)
-    return molecular_orbital_somme
+    probility_densities = np.square(molecular_orbital_somme)
+    return probility_densities, molecular_orbital_somme
 
-def plot_result(position, orbital) :
+def plot_result(position, density) :
+    """Plot the probility density of each molecular orbital"""
     plt.figure()
     plt.grid(True)
-    for i in range(0, len(orbital)) : 
-        plt.plot(position, orbital[i], ".", label=f"orbital {i}")
+    for i in range(0, len(density)) : 
+        plt.plot(position, density[i], ".", label=f"orbital {i}")
         plt.xlabel("Position, en Bohr radius")
         plt.ylabel("Densités électroniques")
         i+=1 
@@ -31,9 +42,9 @@ def main():
     
     position = np.arange(-2, 2, 1e-3) # Attention : valeurs multiples de rayon de Bohr
     
-    score = molecular_orbital_calcul(position, args.filepath)
-    plot_result(position, score)
-    print(score)
+    densities, mo = molecular_orbital_calcul(position, args.filepath)
+    plot_result(position, densities)
+    #print(score)
 
 
 
