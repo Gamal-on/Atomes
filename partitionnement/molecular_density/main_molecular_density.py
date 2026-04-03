@@ -55,13 +55,13 @@ def main():
 
     args = parser.parse_args()
     
-    x = np.arange(-2, 2, 1e-3) # Attention : valeurs multiples de rayon de Bohr
-    y = np.arange(-2, 2, 1e-3)
-    z = np.arange(-2, 2, 1e-3)
+    x = np.arange(-2, 2, 1e-1) # Attention : valeurs multiples de rayon de Bohr
+    y = np.arange(-2, 2, 1e-1)
+    z = np.arange(-2, 2, 1e-1)
 
     densities, mo = molecular_orbital_calcul_3d(x, y, z, args.filepath)
     #plot_result(position, densities)
-    print(densities[0])
+    print(densities)
 
 
 
