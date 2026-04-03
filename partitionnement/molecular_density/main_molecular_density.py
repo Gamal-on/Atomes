@@ -51,14 +51,15 @@ def main():
     z = np.linspace(-6, 6, 80)
 
     atom_positions = np.array([
-    [0.0, 0.0, -0.7],  # atome 1
-    [0.0, 0.0,  0.7],  # atome 2
+    [0.0, 0.0, -0.7], 
+    [0.0, 0.0,  0.7],
+    [0, 0, 0]  
 ])
 
-    centers = np.repeat(atom_positions, 36, axis=0) 
+    centers = np.repeat(atom_positions, 12, axis=0)
 
     densities, mo = molecular_orbital_calcul_3d(x, y, z, centers, args.filepath)
-    print(mo[0])
+    print(densities[0])
 
 
 if __name__ == "__main__":
