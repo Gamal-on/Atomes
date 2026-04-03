@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def molecular_orbitals(position, mo_coefficients, gaussian_exponents):
     """
     Compute the molecule’s Molecular Orbitals, 
