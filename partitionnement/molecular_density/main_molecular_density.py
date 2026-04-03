@@ -6,6 +6,7 @@ import argparse
 from data_read import get_all_mo
 from molecular_orbital import molecular_orbitals, molecular_orbitals_3d
 import plotly.graph_objects as go
+from graphical import plot_orbital_3d, plot_result_1d
 
 def molecular_orbital_calcul(position, fichier): 
     """
@@ -45,12 +46,12 @@ def main():
 
     args = parser.parse_args()
     
-    x = np.linspace(-6e-2, 6e-2, 80)
-    y = np.linspace(-6e-2, 6e-2, 80)
-    z = np.linspace(-6e-2, 6e-2, 80)
+    x = np.arange(-2,2,1e-1)
+    y = np.linspace(-6, 6, 80)
+    z = np.linspace(-6, 6, 80)
 
-    densities, mo = molecular_orbital_calcul_3d(x, y, z, args.filepath)
-    print(densities)
+    densities, mo = molecular_orbital_calcul(x, args.filepath)
+    print(mo[0])
 
 
 if __name__ == "__main__":

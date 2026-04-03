@@ -3,10 +3,7 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import argparse
-from data_read import get_all_mo
-from molecular_orbital import molecular_orbitals, molecular_orbitals_3d
 import plotly.graph_objects as go
-from main_molecular_density import molecular_orbital_calcul, molecular_orbital_calcul_3d
 
 def plot_result_1d(position, density) :
     """Plot the probility density of each molecular orbital"""
@@ -20,31 +17,55 @@ def plot_result_1d(position, density) :
     plt.legend()
     plt.show()
 
-
-def plot_orbital_3d(density, x_range, y_range, z_range, level=None, title="Orbital 3D"):
+def plot_orbital_3d(densities_4d, orbital_index, x_range, y_range, z_range,
+                    level=None, title="Orbital-3D"):
     """
-    Plotting the densities in 3D space
-    Arguments : 
-    - density : 
-    - x_range, y_range, z_range : 
+    Plot une orbitale 3D (une seule) à partir d'un tableau 4D.
+    Parameters  : 
+    - densities_4d : ndarray
+    - orbital_index : int
+    - x_range, y_range, z_range : 1D array
+    - title : str or None
     """
+    
+    orbital = densities_4d[orbital_index]
 
-    # Grille 3D
     X, Y, Z = np.meshgrid(x_range, y_range, z_range, indexing='ij')
 
-    # Valeur de seuil
-    if level is None:
-        level = 0.3 * np.max(np.abs(density))
+    # Normalisation
+    orbital_vis = orbital / np.max(np.abs(orbital))
 
-    fig = go.Figure(data=go.Isosurface(
+    if level is None:
+        level = 0.05 
+
+    fig = go.Figure()
+
+    # Partie positive
+    fig.add_trace(go.Isosurface(
         x=X.ravel(),
         y=Y.ravel(),
         z=Z.ravel(),
-        value=density.ravel(),
+        value=orbital_vis.ravel(),
         isomin=level,
-        isomax=density.max(),
+        isomax=1.0,
         surface_count=1,
+        opacity=0.6,
         caps=dict(x_show=False, y_show=False, z_show=False),
+        showscale=False,
+    ))
+
+    # Partie négative
+    fig.add_trace(go.Isosurface(
+        x=X.ravel(),
+        y=Y.ravel(),
+        z=Z.ravel(),
+        value=orbital_vis.ravel(),
+        isomin=-1.0,
+        isomax=-level,
+        surface_count=1,
+        opacity=0.6,
+        caps=dict(x_show=False, y_show=False, z_show=False),
+        showscale=False,
     ))
 
     fig.update_layout(
@@ -55,23 +76,12 @@ def plot_orbital_3d(density, x_range, y_range, z_range, level=None, title="Orbit
             zaxis_title='z',
         )
     )
+
     fig.show()
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Calcul des orbitales moléculaires.")
-    
-    parser.add_argument("filepath", type=str, help="Chemin vers le fichier d'entrée")
-
-    args = parser.parse_args()
-    
-    x = np.linspace(-6e-2, 6e-2, 80)
-    y = np.linspace(-6e-2, 6e-2, 80)
-    z = np.linspace(-6e-2, 6e-2, 80)
-
-    densities, mo = molecular_orbital_calcul_3d(x, y, z, args.filepath)
-    plot_orbital_3d(densities, x, y, x)
-
+    pass
 
 
 if __name__ == "__main__":
