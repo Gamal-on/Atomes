@@ -51,6 +51,12 @@ def plot_result_1d(position, density) :
 
 
 def plot_orbital_3d(density, x_range, y_range, z_range, level=None, title="Orbital 3D"):
+    """
+    Plotting the densities in 3D space
+    Arguments : 
+    - density : 
+    - x_range, y_range, z_range : 
+    """
 
     # Grille 3D
     X, Y, Z = np.meshgrid(x_range, y_range, z_range, indexing='ij')
@@ -87,13 +93,13 @@ def main():
 
     args = parser.parse_args()
     
-    x = np.arange(-2, 2, 1e-1) # Attention : valeurs multiples de rayon de Bohr
-    y = np.arange(-2, 2, 1e-1)
-    z = np.arange(-2, 2, 1e-1)
+    x = np.linspace(-6e-2, 6e-2, 80)
+    y = np.linspace(-6e-2, 6e-2, 80)
+    z = np.linspace(-6e-2, 6e-2, 80)
 
     densities, mo = molecular_orbital_calcul_3d(x, y, z, args.filepath)
-    #plot_result(position, densities)
-    print(densities)
+    #print(densities)
+    plot_orbital_3d(densities, x, y, x)
 
 
 
