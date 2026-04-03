@@ -2,53 +2,47 @@ import numpy as np
 
 def molecular_orbitals(position, mo_coefficients, gaussian_exponents):
     """
-    Compute the molecule’s Molecular Orbitals, 
+    Compute the molecule Molecular Orbitals 
     from a basis of Gaussian functions, for a given position.
     
     Parameters:
-    - x, y, z: nd arrays of atomic distances (unit: Bohr radius)
-    - mo_coefficients: 2D array (size M, 36), coefficients of the basis functions of the orbitals
-    - gaussian_exponents: 1D array (size 36), exponents of the Gaussian basis functions
+    - position: 1D array of coordinates (Bohr radius)
+    - mo_coefficients: 2D array (M, 36)
+    - gaussian_exponents: 1D array (36,)
     
     Returns:
-    - 2D array containing the values of the MOs for each position value.
+    - 2D array of shape (M, len(position))
     """
-    # Test coherent 
-    # if mo_coefficients.shape[1] != len(gaussian_exponents):
-      #  raise ValueError(
-        #    f"Incohérence : {mo_coefficients.shape[1]} coeffs mais {len(gaussian_exponents)} exposants !"
-       # )
-    
-    # On calcule toutes les gaussiennes pour toutes les positions d'un coup
-    gaussians = np.exp(-gaussian_exponents[:, np.newaxis] * (position)[np.newaxis, :])
-    
-    # On applique les coefficients par multiplication matricielle
+    position = np.asarray(position, dtype=float)
+
+    # Gaussiennes : exp(-alpha * x^2)
+    gaussians = np.exp(-gaussian_exponents[:, np.newaxis] * position[np.newaxis, :]**2)
+
     molecular_orbitals = mo_coefficients @ gaussians
-    
     return molecular_orbitals
 
-def molecular_orbitals_3d(x_range, y_range, z_range, mo_coefficients, gaussian_exponents):
+def molecular_orbitals_3d(x_range, y_range, z_range,
+                          mo_coefficients, gaussian_exponents, centers):
     """
-   Return the molecular orbitals on a 3D grid.
-    
-    Parameters:
-    - x_range, y_range, z_range : 1D array of the coordinates, in Bohr radius
-    - mo_coefficients: 2D array (size M, 36), coefficients of the basis functions of the orbitals
-    - gaussian_exponents: 1D array (size 36), exponents of the Gaussian basis functions
-    
-    Returns:
-    - 2D array containing the values of the MOs for each position value.
+    - x, y, z : 
+    - mo_coefficients
+    - gaussian_exp
+    - centers : array (36, 3) contenant les positions (x,y,z) des gaussiennes
     """
-    # réation de la grille 3D
+
     x, y, z = np.meshgrid(x_range, y_range, z_range, indexing='ij')
-    r2 = x**2 + y**2 + z**2  # Forme (Nx, Ny, Nz)
-    
-    # Calcul des 36 gaussiennes sur toute la grille d'un coup
-    gaussians = np.exp(-gaussian_exponents[:, np.newaxis, np.newaxis, np.newaxis] * r2[np.newaxis, :, :, :])
-    
-    # On somme
+
+    # Broadcast pour chaque centre
+    dx = x[np.newaxis, :, :, :] - centers[:, 0][:, np.newaxis, np.newaxis, np.newaxis]
+    dy = y[np.newaxis, :, :, :] - centers[:, 1][:, np.newaxis, np.newaxis, np.newaxis]
+    dz = z[np.newaxis, :, :, :] - centers[:, 2][:, np.newaxis, np.newaxis, np.newaxis]
+
+    r2 = dx**2 + dy**2 + dz**2
+
+    gaussians = np.exp(-gaussian_exponents[:, np.newaxis, np.newaxis, np.newaxis] * r2)
+
     molecular_orbitals = np.tensordot(mo_coefficients, gaussians, axes=(1, 0))
-    
+
     return molecular_orbitals
 
 

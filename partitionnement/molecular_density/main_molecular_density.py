@@ -23,7 +23,7 @@ def molecular_orbital_calcul(position, fichier):
     probility_densities = np.square(molecular_orbital_somme)
     return probility_densities, molecular_orbital_somme
 
-def molecular_orbital_calcul_3d(x, y, z, fichier): 
+def molecular_orbital_calcul_3d(x, y, z, centers, fichier): 
     """
     Compute the probability densities of each molecular orbital,
     for a given molecule, as a function of position.
@@ -34,7 +34,7 @@ def molecular_orbital_calcul_3d(x, y, z, fichier):
     - molecular_orbital : 2D array of the OM 
     """
     gaussian_exponents, coeff_molecular_orbital, _, _ = get_all_mo(fichier) 
-    molecular_orbital_somme = molecular_orbitals_3d(x, y, z, coeff_molecular_orbital, gaussian_exponents)
+    molecular_orbital_somme = molecular_orbitals_3d(x, y, z, coeff_molecular_orbital, gaussian_exponents, centers)
     probility_densities = np.square(molecular_orbital_somme)
     return probility_densities, molecular_orbital_somme
 
@@ -46,11 +46,18 @@ def main():
 
     args = parser.parse_args()
     
-    x = np.arange(-2,2,1e-1)
+    x = np.linspace(-6, 6, 80)
     y = np.linspace(-6, 6, 80)
     z = np.linspace(-6, 6, 80)
 
-    densities, mo = molecular_orbital_calcul(x, args.filepath)
+    atom_positions = np.array([
+    [0.0, 0.0, -0.7],  # atome 1
+    [0.0, 0.0,  0.7],  # atome 2
+])
+
+    centers = np.repeat(atom_positions, 36, axis=0) 
+
+    densities, mo = molecular_orbital_calcul_3d(x, y, z, centers, args.filepath)
     print(mo[0])
 
 
