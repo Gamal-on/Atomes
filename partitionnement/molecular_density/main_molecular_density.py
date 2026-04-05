@@ -4,7 +4,7 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import argparse
 from data_read import get_all_mo
-from molecular_orbital import molecular_orbitals, molecular_orbitals_3d
+from molecular_orbital import molecular_orbitals, molecular_orbitals_3d, calculate_molecular_orbitals
 import plotly.graph_objects as go
 from graphical import plot_orbital_3d, plot_result_1d
 
@@ -23,7 +23,7 @@ def molecular_orbital_calcul(position, fichier):
     probility_densities = np.square(molecular_orbital_somme)
     return probility_densities, molecular_orbital_somme
 
-def molecular_orbital_calcul_3d(x, y, z, centers, fichier): 
+def molecular_orbital_calcul_3d(x, y, z, fichier): 
     """
     Compute the probability densities of each molecular orbital,
     for a given molecule, as a function of position.
@@ -33,10 +33,9 @@ def molecular_orbital_calcul_3d(x, y, z, centers, fichier):
     - probability_denisties : 2D array of the proba densities for each orbital
     - molecular_orbital : 2D array of the OM 
     """
-    gaussian_exponents, coeff_molecular_orbital, _, _ = get_all_mo(fichier) 
-    molecular_orbital_somme = molecular_orbitals_3d(x, y, z, coeff_molecular_orbital, gaussian_exponents, centers)
-    probility_densities = np.square(molecular_orbital_somme)
-    return probility_densities, molecular_orbital_somme
+    gauss_exponents, mo_coefficients, mo_numbers, powers, centers_indices = get_all_mo(fichier)
+    orbitals = calculate_molecular_orbitals(, gauss_exponents, powers, mo_coefficients, x, y, z) 
+    return 
 
 
 def main():
@@ -50,15 +49,8 @@ def main():
     y = np.linspace(-6, 6, 80)
     z = np.linspace(-6, 6, 80)
 
-    atom_positions = np.array([
-    [0.0, 0.0, -0.7], 
-    [0.0, 0.0,  0.7],
-    [0, 0, 0]  
-])
 
-    centers = np.repeat(atom_positions, 12, axis=0)
-
-    densities, mo = molecular_orbital_calcul_3d(x, y, z, centers, args.filepath)
+    densities, mo = calculate_molecular_orbitals()
     print(densities[0])
 
 
