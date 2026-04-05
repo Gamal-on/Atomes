@@ -52,7 +52,7 @@ def double_factorial(n : int) -> int:
     """Calcul the double factorail (n!!) """
     if n <= 0:
         return 1
-    return np.prod(np.arange(n, 0, -2))
+    return int(np.prod(np.arange(n, 0, -2)))
 
 
 def calculate_molecular_orbitals(centers : np.ndarray, exponents : np.ndarray, powers : np.ndarray, 

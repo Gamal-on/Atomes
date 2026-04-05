@@ -114,4 +114,4 @@ def get_all_mo(filepath: str):
 
 
 if __name__ == "__main__":
-    get_all_mo()
+    pass
