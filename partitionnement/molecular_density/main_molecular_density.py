@@ -45,13 +45,13 @@ def main():
 
     args = parser.parse_args()
     
-    x = np.linspace(-2, 2, 40)
-    y = np.linspace(-2, 2, 40)
-    z = np.linspace(-2, 2, 40)
+    x = np.linspace(-1e-1, 1e-1, 10)
+    y = np.linspace(-1e-1, 1e-1, 10)
+    z = np.linspace(-1e-1,1e-1, 10)
 
 
     mo = molecular_orbital_calcul_3d(x, y, z, args.filepath)
-    print(mo[0:2])
+    print(mo[0])
 
 
 if __name__ == "__main__":

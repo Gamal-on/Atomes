@@ -1,4 +1,6 @@
 import numpy as np
+import argparse
+from data_read import get_all_mo
 
 def molecular_orbitals(position, mo_coefficients, gaussian_exponents):
     """
@@ -45,8 +47,6 @@ def molecular_orbitals_3d(x_range, y_range, z_range,
 
     return molecular_orbitals
 
-import numpy as np
-
 
 def double_factorial(n):
     """Calcul the double factorail (n!!) """
@@ -69,8 +69,8 @@ def calculate_molecular_orbitals(centers, exponents, powers, coefficients, x, y,
     ---------
     np.array de forme (m, Nx, Ny, Nz)
     """
-    # Initilising the grid
 
+    # Initilising the grid
     X, Y, Z = np.meshgrid(x, y, z, indexing="ij")
     grid_shape = X.shape
     n_gaussians = 36
@@ -79,7 +79,8 @@ def calculate_molecular_orbitals(centers, exponents, powers, coefficients, x, y,
     # Initialisation of the output array
     mo_grids = np.zeros((n_orbitals, *grid_shape))
 
-    # 2. Calcul of the normalisation factor for each gaussian
+    # Calcul of the normalisation factor for each gaussian
+    # N = np.ones(n_gaussians)
     N = np.zeros(n_gaussians)
     for i in range(n_gaussians):
         l, m, n = powers[i]
@@ -91,7 +92,7 @@ def calculate_molecular_orbitals(centers, exponents, powers, coefficients, x, y,
             double_factorial(2 * l - 1)
             * double_factorial(2 * m - 1)
             * double_factorial(2 * n - 1))
-        N[i] = num / den
+        N[i] = num /den
 
     # Contribution of each gaussian
     for i in range(n_gaussians):
