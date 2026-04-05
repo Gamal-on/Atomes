@@ -48,14 +48,15 @@ def molecular_orbitals_3d(x_range, y_range, z_range,
     return molecular_orbitals
 
 
-def double_factorial(n):
+def double_factorial(n : int) -> int:
     """Calcul the double factorail (n!!) """
     if n <= 0:
         return 1
     return np.prod(np.arange(n, 0, -2))
 
 
-def calculate_molecular_orbitals(centers, exponents, powers, coefficients, x, y, z):
+def calculate_molecular_orbitals(centers : np.ndarray, exponents : np.ndarray, powers : np.ndarray, 
+                                 coefficients : np.ndarray, x : np.ndarray, y : np.ndarray, z : np.ndarray) -> np.ndarray:
     """Calcule la valeur des orbitales moléculaires sur une grille 3D.
 
     Paramètres:

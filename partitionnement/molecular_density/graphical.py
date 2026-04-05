@@ -1,20 +1,23 @@
-import numpy as np
 import matplotlib
+import numpy as np
+
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 
-def plot_result_1d(position, density) :
+
+def plot_result_1d(position, density):
     """Plot the probility density of each molecular orbital"""
     plt.figure()
     plt.grid(True)
-    for i in range(0, len(density)) : 
+    for i in range(0, len(density)): 
         plt.plot(position, density[i], ".", label=f"orbital {i}")
         plt.xlabel("Position, en Bohr radius")
         plt.ylabel("Densités électroniques")
-        i+=1 
+        i += 1 
     plt.legend()
     plt.show()
+
 
 def plot_orbital_3d(densities_4d, orbital_index, x_range, y_range, z_range,
                     level=None, title="Orbital-3D"):

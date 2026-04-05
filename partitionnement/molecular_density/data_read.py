@@ -1,11 +1,11 @@
-import numpy as np
+import pathlib
 import re
-import sys
-import argparse
+
+import numpy as np
 
 
 def lire_fichier(filepath: str):
-    with open(filepath, "r") as f:
+    with pathlib.Path(filepath).open() as f:
         lines = f.readlines()
 
     gaussienne_vals = []
@@ -111,7 +111,6 @@ def get_all_mo(filepath: str):
     all_coeffs = np.array([mo_coeffs[i] for i in mo_numbers])
     
     return gaussienne, all_coeffs, mo_numbers, powers, centers_geom
-
 
 
 if __name__ == "__main__":

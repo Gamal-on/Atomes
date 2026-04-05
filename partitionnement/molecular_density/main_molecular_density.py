@@ -1,12 +1,13 @@
-import numpy as np
 import matplotlib
+import numpy as np
+
 matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
 import argparse
+
 from data_read import get_all_mo
-from molecular_orbital import molecular_orbitals, molecular_orbitals_3d, calculate_molecular_orbitals
-import plotly.graph_objects as go
-from graphical import plot_orbital_3d, plot_result_1d
+from graphical import plot_orbital_3d
+from molecular_orbital import calculate_molecular_orbitals, molecular_orbitals
+
 
 def molecular_orbital_calcul(position, fichier): 
     """
@@ -23,6 +24,7 @@ def molecular_orbital_calcul(position, fichier):
     probility_densities = np.square(molecular_orbital_somme)
     return probility_densities, molecular_orbital_somme
 
+
 def molecular_orbital_calcul_3d(x, y, z, fichier): 
     """
     Compute the probability densities of each molecular orbital,
@@ -32,6 +34,9 @@ def molecular_orbital_calcul_3d(x, y, z, fichier):
     Returns : 
     - probability_denisties : 2D array of the proba densities for each orbital
     - molecular_orbital : 2D array of the OM 
+    Returns : 
+    - orbitals : 4D array of the molecular orbitals (n_orbitals, nx, ny, nz)
+    - densities : 4D array of the probability densities (n_or
     """
     gauss_exponents, mo_coefficients, _, powers, centers_geom = get_all_mo(fichier)
     orbitals = calculate_molecular_orbitals(centers_geom, gauss_exponents, powers, mo_coefficients, x, y, z) 
@@ -48,8 +53,7 @@ def main():
     
     x = np.linspace(-1e-1, 2e-1, 80)
     y = np.linspace(-1e-1, 2e-1, 80)
-    z = np.linspace(-1e-1,2e-1, 80)
-
+    z = np.linspace(-1e-1, 2e-1, 80)
 
     mo, densities = molecular_orbital_calcul_3d(x, y, z, args.filepath)
     plot_orbital_3d(densities, 3, x, y, z)
