@@ -1,9 +1,7 @@
 import numpy as np
 import re
 import sys
-
-import re
-import numpy as np
+import argparse
 
 
 def lire_fichier(filepath: str):
@@ -17,11 +15,18 @@ def lire_fichier(filepath: str):
 
     current_mo = None
     current_vals = []
+    atomes_coords = {} 
 
     for line in lines:
         stripped = line.strip()
         if not stripped:
             continue
+
+        atome_match = re.search(r"CENTRE\s+(\d+)\)\s+([-]?\d+\.\d+)\s+([-]?\d+\.\d+)\s+([-]?\d+\.\d+)", line)
+        if atome_match:
+            idx = int(atome_match.group(1))
+            coords = [float(atome_match.group(2)), float(atome_match.group(3)), float(atome_match.group(4))]
+            atomes_coords[idx] = coords
 
         if stripped.upper().startswith("END DATA"):
             break
@@ -86,7 +91,7 @@ def lire_fichier(filepath: str):
     centers_indices = [int(v) for v in centre_vals]
 
     gaussienne = np.array([float(v) for v in gaussienne_vals])
-    return gaussienne, mo_coeffs, powers, centers_indices
+    return gaussienne, mo_coeffs, powers, centers_indices, atomes_coords
 
 
 def get_all_mo(filepath: str):
@@ -96,18 +101,18 @@ def get_all_mo(filepath: str):
     all_coeffs : np.ndarray with shape (m, 36) of the orbitals coefficients
     mo_numbers : list of int, identifying the orbitals
     powers : np.ndarray 2D with shape (36, 3). For  each gaussian, it gives its quantical numbers [l,n,m]
-    centers_indices : list of int
+    centers_geom : np.ndarray (36, 3), giving the center of the gaussian, for each one
     """
-    gaussienne, mo_coeffs, powers, centers_indices = lire_fichier(filepath)
-
+    gaussienne, mo_coeffs, powers, centers_indices, atomes_coords = lire_fichier(filepath)
+    
+    centers_geom = np.array([atomes_coords[int(idx)] for idx in centers_indices])
+    
     mo_numbers = sorted(mo_coeffs.keys())
-
     all_coeffs = np.array([mo_coeffs[i] for i in mo_numbers])
-
-    return gaussienne, all_coeffs, mo_numbers, powers, centers_indices
+    
+    return gaussienne, all_coeffs, mo_numbers, powers, centers_geom
 
 
 
 if __name__ == "__main__":
     get_all_mo()
-

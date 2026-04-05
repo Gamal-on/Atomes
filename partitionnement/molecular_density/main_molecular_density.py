@@ -33,25 +33,25 @@ def molecular_orbital_calcul_3d(x, y, z, fichier):
     - probability_denisties : 2D array of the proba densities for each orbital
     - molecular_orbital : 2D array of the OM 
     """
-    gauss_exponents, mo_coefficients, mo_numbers, powers, centers_indices = get_all_mo(fichier)
-    orbitals = calculate_molecular_orbitals(, gauss_exponents, powers, mo_coefficients, x, y, z) 
-    return 
+    gauss_exponents, mo_coefficients, _, powers, centers_geom = get_all_mo(fichier)
+    orbitals = calculate_molecular_orbitals(centers_geom, gauss_exponents, powers, mo_coefficients, x, y, z) 
+    return orbitals
 
 
 def main():
     parser = argparse.ArgumentParser(description="Calcul des orbitales moléculaires.")
     
-    parser.add_argument("filepath", type=str, help="Chemin vers le fichier d'entrée")
+    parser.add_argument("filepath", type=str)
 
     args = parser.parse_args()
     
-    x = np.linspace(-6, 6, 80)
-    y = np.linspace(-6, 6, 80)
-    z = np.linspace(-6, 6, 80)
+    x = np.linspace(-2, 2, 40)
+    y = np.linspace(-2, 2, 40)
+    z = np.linspace(-2, 2, 40)
 
 
-    densities, mo = calculate_molecular_orbitals()
-    print(densities[0])
+    mo = molecular_orbital_calcul_3d(x, y, z, args.filepath)
+    print(mo[0:2])
 
 
 if __name__ == "__main__":

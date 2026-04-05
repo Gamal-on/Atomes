@@ -109,7 +109,7 @@ def calculate_molecular_orbitals(centers, exponents, powers, coefficients, x, y,
         gaussian_val = N[i] * (dx**l) * (dy**m) * (dz**n) * np.exp(-alpha * r2)
 
         for j in range(n_orbitals):
-            mo_grids[j] += coefficients[i, j] * gaussian_val
+            mo_grids[j] += coefficients[j, i] * gaussian_val
 
     return mo_grids
 
