@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-import argparse
 import plotly.graph_objects as go
 
 def plot_result_1d(position, density) :

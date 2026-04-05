@@ -35,7 +35,8 @@ def molecular_orbital_calcul_3d(x, y, z, fichier):
     """
     gauss_exponents, mo_coefficients, _, powers, centers_geom = get_all_mo(fichier)
     orbitals = calculate_molecular_orbitals(centers_geom, gauss_exponents, powers, mo_coefficients, x, y, z) 
-    return orbitals
+    densities = np.square(orbitals)
+    return orbitals, densities
 
 
 def main():
@@ -45,13 +46,13 @@ def main():
 
     args = parser.parse_args()
     
-    x = np.linspace(-1e-1, 1e-1, 10)
-    y = np.linspace(-1e-1, 1e-1, 10)
-    z = np.linspace(-1e-1,1e-1, 10)
+    x = np.linspace(-1e-1, 2e-1, 80)
+    y = np.linspace(-1e-1, 2e-1, 80)
+    z = np.linspace(-1e-1,2e-1, 80)
 
 
-    mo = molecular_orbital_calcul_3d(x, y, z, args.filepath)
-    print(mo[0])
+    mo, densities = molecular_orbital_calcul_3d(x, y, z, args.filepath)
+    plot_orbital_3d(densities, 3, x, y, z)
 
 
 if __name__ == "__main__":
