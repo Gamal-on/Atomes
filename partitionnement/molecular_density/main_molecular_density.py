@@ -1,10 +1,13 @@
-import numpy as np
 import matplotlib
+import numpy as np
+
 matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
 import argparse
+
 from data_read import get_all_mo
-from molecular_orbital import molecular_orbitals
+from graphical import plot_orbital_3d
+from molecular_orbital import calculate_molecular_orbitals, molecular_orbitals
+
 
 def molecular_orbital_calcul(position, fichier): 
     """
@@ -21,31 +24,39 @@ def molecular_orbital_calcul(position, fichier):
     probility_densities = np.square(molecular_orbital_somme)
     return probility_densities, molecular_orbital_somme
 
-def plot_result(position, density) :
-    """Plot the probility density of each molecular orbital"""
-    plt.figure()
-    plt.grid(True)
-    for i in range(0, len(density)) : 
-        plt.plot(position, density[i], ".", label=f"orbital {i}")
-        plt.xlabel("Position, en Bohr radius")
-        plt.ylabel("Densités électroniques")
-        i+=1 
-    plt.legend()
-    plt.show()
+
+def molecular_orbital_calcul_3d(x, y, z, fichier): 
+    """
+    Compute the probability densities of each molecular orbital,
+    for a given molecule, as a function of position.
+    Arguments : 
+    - position : 1D-ndarray 
+    Returns : 
+    - probability_denisties : 2D array of the proba densities for each orbital
+    - molecular_orbital : 2D array of the OM 
+    Returns : 
+    - orbitals : 4D array of the molecular orbitals (n_orbitals, nx, ny, nz)
+    - densities : 4D array of the probability densities (n_or
+    """
+    gauss_exponents, mo_coefficients, _, powers, centers_geom = get_all_mo(fichier)
+    orbitals = calculate_molecular_orbitals(centers_geom, gauss_exponents, powers, mo_coefficients, x, y, z) 
+    densities = np.square(orbitals)
+    return orbitals, densities
+
 
 def main():
     parser = argparse.ArgumentParser(description="Calcul des orbitales moléculaires.")
     
-    parser.add_argument("filepath", type=str, help="Chemin vers le fichier d'entrée")
+    parser.add_argument("filepath", type=str)
 
     args = parser.parse_args()
     
-    position = np.arange(-2, 2, 1e-3) # Attention : valeurs multiples de rayon de Bohr
-    
-    densities, mo = molecular_orbital_calcul(position, args.filepath)
-    plot_result(position, densities)
-    #print(score)
+    x = np.linspace(-1e-1, 2e-1, 80)
+    y = np.linspace(-1e-1, 2e-1, 80)
+    z = np.linspace(-1e-1, 2e-1, 80)
 
+    mo, densities = molecular_orbital_calcul_3d(x, y, z, args.filepath)
+    print(densities)
 
 
 if __name__ == "__main__":
