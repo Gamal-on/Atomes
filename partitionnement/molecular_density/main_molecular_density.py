@@ -56,7 +56,7 @@ def main():
     z = np.linspace(-1e-1, 2e-1, 80)
 
     mo, densities = molecular_orbital_calcul_3d(x, y, z, args.filepath)
-    plot_orbital_3d(densities, 3, x, y, z)
+    print(densities)
 
 
 if __name__ == "__main__":
