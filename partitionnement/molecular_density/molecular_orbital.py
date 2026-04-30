@@ -54,7 +54,7 @@ def double_factorial(n : int) -> int:
         return 1
     return int(np.prod(np.arange(n, 0, -2)))
 
-
+#C'est cette fonction la principale
 def calculate_molecular_orbitals(centers : np.ndarray, exponents : np.ndarray, powers : np.ndarray, 
                                  coefficients : np.ndarray, x : np.ndarray, y : np.ndarray, z : np.ndarray) -> np.ndarray:
     """Calcule la valeur des orbitales moléculaires sur une grille 3D.

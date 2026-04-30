@@ -1,0 +1,24 @@
+
+#imports
+
+
+
+
+
+
+def produit_scalaire(G,r): #G triplet (h,k,l) dans la base a b c
+
+
+def Bj(T,j): #Renvoie le facteur de Debye Waller avec la température T et l'atome j
+    #Avoir une base de données de ces facteurs en fonction et de l'atome et de la temp (matrice)
+
+
+def fonction_exp_DW(T,G,j):  #T température, j atome --> Bj avec fct du dessus
+    #Renvoie exp(-Bj(T,j)*G^2) pour un atome j et une température T et une position G
+
+def fonction_expiGr (G,r): #Renvoie exp(i*G.r) pour une position r et une position G (réseau réciproque)
+
+
+def Facteur_de_structure(G,T,liste_atomes,liste_FD): #avec liste_FD la liste des facteurs de diffusion de chaque atome j 
+    #(attention!! utiliser les même indices pour les atomes et les facteurs de diffusion)
+    # Les FD ont été calculés avec les TF  
