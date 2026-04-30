@@ -6,7 +6,10 @@
 
 
 
-def produit_scalaire(G,r): #G triplet (h,k,l) dans la base a b c
+def produit_scalaire(G,j,rj): #G triplet (h,k,l) du réseau réciproque
+    # j indice de l'atome j dans la maille directe
+    #rj triplet (x,y,z) de la position de l'atome j dans la maille directe
+    #Renvoie le produit scalaire G.rj
 
 
 def Bj(T,j): #Renvoie le facteur de Debye Waller avec la température T et l'atome j
@@ -16,9 +19,94 @@ def Bj(T,j): #Renvoie le facteur de Debye Waller avec la température T et l'ato
 def fonction_exp_DW(T,G,j):  #T température, j atome --> Bj avec fct du dessus
     #Renvoie exp(-Bj(T,j)*G^2) pour un atome j et une température T et une position G
 
-def fonction_expiGr (G,r): #Renvoie exp(i*G.r) pour une position r et une position G (réseau réciproque)
+def fonction_expiGr (G,rj): #Renvoie exp(i*G.rj) pour une position rj et une position G (réseau réciproque)
 
 
-def Facteur_de_structure(G,T,liste_atomes,liste_FD): #avec liste_FD la liste des facteurs de diffusion de chaque atome j 
+def Facteur_de_structure(G,T,liste_atomes,liste_FD): #avec liste_FD la liste des facteurs de diffusion fj(G) de chaque atome j 
     #(attention!! utiliser les même indices pour les atomes et les facteurs de diffusion)
-    # Les FD ont été calculés avec les TF  
+    # Les FD ont été calculés avec les TF de chaque atome pour une position en entrée G
+    # Renvoie la somme sur les atomes de la maille (qu'on note j parmi la liste_atomes) fj(G)*exp(-Bj(T,j)*G^2)*exp(i*G.rj) avec rj la position de l'atome j dans la maille 
+
+
+
+
+
+
+
+import numpy as np
+
+
+def produit_scalaire(G, rj):
+    """
+    G :  (h,k,l) vecteur du réseau réciproque
+    rj : (x,y,z) position de l'atome j
+    """
+    G = np.array(G)
+    rj = np.array(rj)
+    return np.dot(G, rj)
+
+
+def norme_carre(G):
+#Renvoie |G|^2
+    G = np.array(G)
+    return np.dot(G, G)
+
+
+#base de données B_j(T)
+# Du type : {j: {T: B_value}} avec T en kelvin et B_value en Bohr^2 ou autre unité de longueur au carré
+
+B_database = {
+    0: {300: 1.0},  # atome 0
+    1: {300: 0.8},  # atome 1
+    2: {300: 1.2},  # etc.
+}
+
+
+def Bj(T, j):
+    """
+    Renvoie le facteur B_j pour un atome j à température T
+    """
+    try:
+        return B_database[j][T]
+    except KeyError:
+        raise ValueError(f"B_j non défini pour j={j}, T={T}")
+
+
+def fonction_exp_DW(T, G, j):
+    """
+    Renvoie exp(-B_j(T,j) * |G|^2)
+    """
+    B = Bj(T, j)
+    G2 = norme_carre(G)
+    return np.exp(-B * G2)
+
+
+def fonction_expiGr(G, rj):
+    """
+    Renvoie exp(i G.rj)
+    """
+    phase = produit_scalaire(G, rj)
+    return np.exp(1j * phase)
+
+
+def Facteur_de_structure(G, T, liste_atomes, liste_FD):
+    """
+    G : vecteur réciproque
+    T : température
+    liste_atomes : liste de dictionnaires avec au moins {'position': (x,y,z)}
+    liste_FD : liste des f_j(G) correspondants
+
+    Retourne F(G)
+    """
+    F = 0 + 0j  # complexe
+
+    for j, atome in enumerate(liste_atomes):
+        rj = atome["position"]
+        fj = liste_FD[j]
+
+        DW = fonction_exp_DW(T, G, j)
+        phase = fonction_expiGr(G, rj)
+
+        F += fj * DW * phase
+
+    return F
