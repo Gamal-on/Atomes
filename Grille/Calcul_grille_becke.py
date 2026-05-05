@@ -30,10 +30,11 @@ def generate_grid(number_radial_points, centers_coordinates, ordre_choisi, r_m=0
     phi = lebedev_data_array[:, 1]
 
     # Generating radial points (Gauss-Chebyshev type)
-    i_range = np.arange(number_radial_points)
+    i_range = np.arange(1, number_radial_points+1)
     x_i = np.cos(np.pi * i_range / (number_radial_points + 1))
     r_i = r_m * (1 + x_i) / (1 - x_i)
-    
+
+
     # Cartesian coordinates on the unit sphere
     X_unit = np.sin(theta) * np.cos(phi)
     Y_unit = np.sin(theta) * np.sin(phi)
@@ -86,7 +87,8 @@ def plot_grid(cart_array):
 
 
 def main() : 
-    generate_grid(500, [[0, 0, 0], [1, 1, 1]], 15)
+    grid = generate_grid(500, [[0, 0, 0], [500, 500, 0]], 15)
+    plot_grid(grid)
 
 if __name__ == "__main__":
     main()
