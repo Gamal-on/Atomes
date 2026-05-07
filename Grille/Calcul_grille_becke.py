@@ -7,14 +7,17 @@ from mpl_toolkits.mplot3d import Axes3D
 from pathlib import Path
 
 
-def generate_grid(number_radial_points, centers_coordinates, ordre_choisi, r_m=0.5):
+def generate_grid(number_radial_points, centers_coordinates, ordre_choisi, r_m=0.5, units='angstroem'):
     """
-    Returns a multicenters 3D grid
+    Returns a multicenters 3D grid, in Angstrom, of shape (N_atoms, N_points, 3).
     Arguments : 
     - number_radial_points : number of radial points
     - centers_coordinates : list of coordinates of the centers (N x 3)
-    - ordre_choisi : order of the Lebedev gri
+    - ordre_choisi : order of the Lebedev grid
     """
+
+    BOHR_TO_ANGSTROM = 0.5291772108
+
     # Loading lebedev data
     directory_script = Path(__file__).parent
     file_name = f"lebedev_{ordre_choisi}.txt"
@@ -49,11 +52,38 @@ def generate_grid(number_radial_points, centers_coordinates, ordre_choisi, r_m=0
 
     # Translation of the grid on each center
     coords_matrice = np.array(centers_coordinates)
+
+    if units == 'bohr':
+        coords_matrice = coords_matrice * BOHR_TO_ANGSTROM
     
     # Final resulat
     cart_array = grille_relative[np.newaxis, :, :] + coords_matrice[:, np.newaxis, :]
     
     return cart_array
+
+
+def export_grid_for_multiwfn(cart_array, output_path):
+    """
+    Converts the grid tensor (N_atoms, N_points, 3) to Multiwfn format.
+    Converts Angstrom -> Bohr.
+    
+    Arguments:
+    - cart_array   : output of generate_grid(), shape (N_atoms, N_points, 3)
+    - output_path  : path of the output text file
+    """
+    ANGSTROM_TO_BOHR = 1.8897259886
+
+    # Flatten + conversion
+    all_points = cart_array.reshape(-1, 3) * ANGSTROM_TO_BOHR
+    
+    n_total = len(all_points)
+    
+    with open(output_path, 'w') as f:
+        f.write(f"{n_total}\n")
+        for x, y, z in all_points:
+            f.write(f"{x:20.10f}  {y:20.10f}  {z:20.10f}\n")
+    
+    print(f"{n_total} points written to {output_path}")
 
 def plot_grid(cart_array):
     """
@@ -88,7 +118,7 @@ def plot_grid(cart_array):
 
 def main() : 
     grid = generate_grid(500, [[0, 0, 0], [500, 500, 0]], 15)
-    plot_grid(grid)
+    print(grid)
 
 if __name__ == "__main__":
     main()
