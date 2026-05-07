@@ -7,7 +7,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from pathlib import Path
 
 
-def generate_grid(number_radial_points, centers_coordinates, ordre_choisi, r_m=0.5, units='angstroem'):
+def generate_grid(radial_lenght, centers_coordinates, ordre_choisi, r_m=0.5, units='bohr'):
     """
     Returns a multicenters 3D grid, in Angstrom, of shape (N_atoms, N_points, 3).
     Arguments : 
@@ -33,8 +33,8 @@ def generate_grid(number_radial_points, centers_coordinates, ordre_choisi, r_m=0
     phi = lebedev_data_array[:, 1]
 
     # Generating radial points (Gauss-Chebyshev type)
-    i_range = np.arange(1, number_radial_points+1)
-    x_i = np.cos(np.pi * i_range / (number_radial_points + 1))
+    i_range = np.arange(1, radial_lenght+1)
+    x_i = np.cos(np.pi * i_range / (radial_lenght + 1))
     r_i = r_m * (1 + x_i) / (1 - x_i)
 
 
@@ -117,8 +117,16 @@ def plot_grid(cart_array):
 
 
 def main() : 
-    grid = generate_grid(500, [[0, 0, 0], [500, 500, 0]], 15)
-    print(grid)
+    centers = np.array([[1.66108794e-17,  1.37864202e-16,  2.71276247e-01],  
+                        [1.57479258e-16,  1.30702003e-15,  2.57183145e+00], 
+                        [-6.46107046e-16,  2.19124748e+00, -1.13016901e+00], 
+                        [-1.01673810e-15, 3.82399079e+00, -1.62836533e-01], 
+                        [-7.75319645e-16,  2.24084147e+00, -3.02713496e+00],
+                        [2.39350839e-16, -2.19124748e+00, -1.13016901e+00],
+                        [ 1.30178599e-16, -2.24084147e+00,-3.02713496e+00], 
+                        [ 5.28492566e-16, -3.82399079e+00, -1.62836533e-01]])
+    grid = generate_grid(30, centers, ordre_choisi=53, r_m=0.5, units='bohr')
+    export_grid_for_multiwfn(grid, "urea_grid_multiwfn.txt")
 
 if __name__ == "__main__":
     main()
