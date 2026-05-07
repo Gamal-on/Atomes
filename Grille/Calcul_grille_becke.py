@@ -62,28 +62,31 @@ def generate_grid(radial_lenght, centers_coordinates, ordre_choisi, r_m=0.5, uni
     return cart_array
 
 
-def export_grid_for_multiwfn(cart_array, output_path):
+def export_grid_for_multiwfn(cart_array, output_path, centers_bohr, r_cutoff=20.0):
     """
-    Converts the grid tensor (N_atoms, N_points, 3) to Multiwfn format.
-    Converts Angstrom -> Bohr.
-    
-    Arguments:
-    - cart_array   : output of generate_grid(), shape (N_atoms, N_points, 3)
-    - output_path  : path of the output text file
+    r_cutoff : distance max en Bohr à partir de l'atome le plus proche
     """
     ANGSTROM_TO_BOHR = 1.8897259886
 
-    # Flatten + conversion
     all_points = cart_array.reshape(-1, 3) * ANGSTROM_TO_BOHR
-    
-    n_total = len(all_points)
-    
+    centers = np.array(centers_bohr)  # (N_atoms, 3) en Bohr
+
+    # Distance minimale de chaque point à n'importe quel atome
+    dists = np.linalg.norm(
+        all_points[:, np.newaxis, :] - centers[np.newaxis, :, :],
+        axis=2
+    )  # shape (N_points, N_atoms)
+    min_dist = dists.min(axis=1)
+
+    mask = min_dist <= r_cutoff
+    filtered = all_points[mask]
+
+    print(f"Points avant cutoff : {len(all_points)}, après : {len(filtered)}")
+
     with open(output_path, 'w') as f:
-        f.write(f"{n_total}\n")
-        for x, y, z in all_points:
+        f.write(f"{len(filtered)}\n")
+        for x, y, z in filtered:
             f.write(f"{x:20.10f}  {y:20.10f}  {z:20.10f}\n")
-    
-    print(f"{n_total} points written to {output_path}")
 
 def plot_grid(cart_array):
     """
@@ -117,20 +120,16 @@ def plot_grid(cart_array):
 
 
 def main() : 
-    centers = np.array([[1.66108794e-17,  1.37864202e-16,  2.71276247e-01],  
-                        [1.57479258e-16,  1.30702003e-15,  2.57183145e+00], 
-                        [-6.46107046e-16,  2.19124748e+00, -1.13016901e+00], 
-                        [-1.01673810e-15, 3.82399079e+00, -1.62836533e-01], 
-                        [-7.75319645e-16,  2.24084147e+00, -3.02713496e+00],
-                        [2.39350839e-16, -2.19124748e+00, -1.13016901e+00],
-                        [ 1.30178599e-16, -2.24084147e+00,-3.02713496e+00], 
-                        [ 5.28492566e-16, -3.82399079e+00, -1.62836533e-01]])
-    grid = generate_grid(30, centers, ordre_choisi=53, r_m=0.5, units='bohr')
-    export_grid_for_multiwfn(grid, "urea_grid_multiwfn.txt")
+    centers = np.array([[0.00000000,  0.00000000,  0.27127625],  
+                        [0.00000000, 0.00000000,  2.57183145], 
+                        [0.00000000,  2.19124748, -1.13016901], 
+                        [0.00000000, 3.82399079e+00, -1.62836533e-01], 
+                        [0.00000000,  2.24084147e+00, -3.02713496e+00],
+                        [0.00000000, -2.19124748e+00, -1.13016901e+00],
+                        [0.00000000, -2.24084147e+00,-3.02713496e+00], 
+                        [0.00000000, -3.82399079e+00, -1.62836533e-01]])
+    grid = generate_grid(10, centers, ordre_choisi=29, r_m=0.5, units='bohr')
+    export_grid_for_multiwfn(grid, "urea_grid_multiwfn.txt", centers)
 
 if __name__ == "__main__":
     main()
-
-
-
-    
