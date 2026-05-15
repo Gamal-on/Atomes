@@ -54,9 +54,28 @@ def norme_carre(G):
 
 #base de données B_j(T)
 # Du type : {j: {T: B_value}} avec T en kelvin et B_value en Bohr^2 ou autre unité de longueur au carré
+#Base de données U_j(T=123K)
+U = {
+    "C": [[151.9, -3.5, U13],
+          [-3.5, U22, U23],
+          [U13, U23, 67.5]],
+    "O": [[U11, U12, U13],
+          [U12, U22, U23],
+          [U13, U23, U33]]
+    "N": [[U11, U12, U13],
+          [U12, U22, U23],
+          [U13, U23, U33]],
+    "H": [[U11, U12, U13],
+          [U12, U22, U23],
+          [U13, U23, U33]]
+}
+#est ce qu'ils sont différents en fonction 
+
+#B=8pi^2*(valeur moyenne de U^2) pour chaque atome
+
 
 B_database = {
-    0: {300: 1.0},  # atome 0
+    "C": {300: 1.0},  # atome 0
     1: {300: 0.8},  # atome 1
     2: {300: 1.2},  # etc.
 }
