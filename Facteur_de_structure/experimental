@@ -2,7 +2,7 @@
 #imports
 
 
-
+'''
 
 
 
@@ -29,11 +29,15 @@ def Facteur_de_structure(G,T,liste_atomes,liste_FD): #avec liste_FD la liste des
 
 
 
-
+'''
 
 
 
 import numpy as np
+import math
+
+
+#La seule dépendance en Temperature se situe dans le facteur de Debye Waller
 
 
 def produit_scalaire(G, rj):
@@ -45,73 +49,83 @@ def produit_scalaire(G, rj):
     rj = np.array(rj)
     return np.dot(G, rj)
 
-
-def norme_carre(G):
-#Renvoie |G|^2
-    G = np.array(G)
-    return np.dot(G, G)
-
-
 #base de données B_j(T)
-# Du type : {j: {T: B_value}} avec T en kelvin et B_value en Bohr^2 ou autre unité de longueur au carré
+# Du type : {j: {B_value}} avec T=123K et B_value en Bohr^2
 #Base de données U_j(T=123K)
+#Cf article Birkedal, les coeff de Uij sont parfois nuls + symétrie de la matrice U 
+#qui vient du fait que les atomes sont dans des positions de symétrie particulières (ex: C à l'origine)
+
+
+scale = 1e-4
+
 U = {
-    "C": [[151.9, -3.5, U13],
-          [-3.5, U22, U23],
-          [U13, U23, 67.5]],
-    "O": [[U11, U12, U13],
-          [U12, U22, U23],
-          [U13, U23, U33]]
-    "N": [[U11, U12, U13],
-          [U12, U22, U23],
-          [U13, U23, U33]],
-    "H": [[U11, U12, U13],
-          [U12, U22, U23],
-          [U13, U23, U33]]
+    "C": scale * np.array([
+        [147,  1,   0.0],
+        [ 1, 147,   0.0],
+        [  0.0,   0.0,  65]
+    ]),
+
+    "O": scale * np.array([
+        [197,  17,   0.0],
+        [ 17, 197,   0.0],
+        [  0.0,   0.0,  63]
+    ]),
+
+    "N": scale * np.array([
+        [286, -147.0,   0],
+        [-147.0, 286,   2],
+        [  2,   2,  95]
+    ]),
+
+    "H1": scale * np.array([
+        [440, -222, -31],
+        [-222, 440, -31],
+        [-31, -31, 216]]),
+    "H2": scale * np.array([
+        [430, -158, 19],
+        [-158, 430, 19],
+        [19, 19, 140]])
 }
+#Pour l'hydrogène, on n'a pas de données précises, on peut faire l'approx on suppose que H vibre pareil dans toutes les directions
+#Comme H est très léger, il vibre davantage thermiquement (les Odg sont de l'ordre de 0.03–0.08 A˚2)
+#e-4 A^2
 #est ce qu'ils sont différents en fonction 
 
-#B=8pi^2*(valeur moyenne de U^2) pour chaque atome
+#B=8pi^2*(valeur moyenne de U^2) pour chaque atome à T=123K fixée ici
+
+B_database = {k: 8*(math.pi)**2*3.57106*v for k,v in U.items()}
 
 
-B_database = {
-    "C": {300: 1.0},  # atome 0
-    1: {300: 0.8},  # atome 1
-    2: {300: 1.2},  # etc.
-}
-
-
-def Bj(T, j):
+def Bj(j):
     """
     Renvoie le facteur B_j pour un atome j à température T
     """
     try:
-        return B_database[j][T]
+        return B_database[j]
     except KeyError:
-        raise ValueError(f"B_j non défini pour j={j}, T={T}")
+        raise ValueError(f"B_j non défini pour j={j}, T=123K")
 
 
-def fonction_exp_DW(T, G, j):
+def fonction_exp_DW(G, j):
     """
-    Renvoie exp(-B_j(T,j) * |G|^2)
+    Renvoie exp(G^T*-B_j(T,j) * G)
     """
-    B = Bj(T, j)
-    G2 = norme_carre(G)
-    return np.exp(-B * G2)
+    B = Bj(j)
+    mult= G.T @ B @ G
+    return np.exp(-mult)
 
 
 def fonction_expiGr(G, rj):
     """
-    Renvoie exp(i G.rj)
+    Renvoie exp(i*G.rj)
     """
     phase = produit_scalaire(G, rj)
     return np.exp(1j * phase)
 
 
-def Facteur_de_structure(G, T, liste_atomes, liste_FD):
+def Facteur_de_structure(G, liste_atomes, liste_FD):
     """
     G : vecteur réciproque
-    T : température
     liste_atomes : liste de dictionnaires avec au moins {'position': (x,y,z)}
     liste_FD : liste des f_j(G) correspondants
 
@@ -123,9 +137,11 @@ def Facteur_de_structure(G, T, liste_atomes, liste_FD):
         rj = atome["position"]
         fj = liste_FD[j]
 
-        DW = fonction_exp_DW(T, G, j)
+        DW = fonction_exp_DW(G, j)
         phase = fonction_expiGr(G, rj)
 
         F += fj * DW * phase
 
     return F
+
+
