@@ -29,8 +29,8 @@ def generate_grid(radial_lenght, centers_coordinates, ordre_choisi, r_m=0.5, uni
         print(f"Erreur : Le fichier {file_name} est introuvable.")
         return None
 
-    theta = lebedev_data_array[:, 0]
-    phi = lebedev_data_array[:, 1]
+    phi = lebedev_data_array[:, 0]
+    theta = lebedev_data_array[:, 1]
 
     # Generating radial points (Gauss-Chebyshev type)
     i_range = np.arange(1, radial_lenght+1)
@@ -62,7 +62,7 @@ def generate_grid(radial_lenght, centers_coordinates, ordre_choisi, r_m=0.5, uni
     return cart_array
 
 
-def export_grid_for_multiwfn(cart_array, output_path, centers_bohr, r_cutoff=80.0):
+def export_grid_for_multiwfn(cart_array, output_path, centers_bohr, r_cutoff=50.0):
     """
     Export the grid points to a file in a format compatible with Multiwfn, in bohr
     Arguments:
@@ -177,15 +177,15 @@ def plot_multicenter_grid(cart_array, centers_bohr):
 
 
 def main() : 
-    centers = np.array([[0.00000000,  0.00000000,  0.27127625],  
-                        [0.00000000, 0.00000000,  2.57183145], 
+    centers = np.array([[0.00000000,  0.00000000,  0.27127625],
+                         [0.00000000, 0.00000000,  2.57183145], 
                         [0.00000000,  2.19124748, -1.13016901], 
-                        [0.00000000, 3.82399079e+00, -1.62836533e-01], 
+                        [0.00000000, 3.82399079e+00, -0.162836533e-01], 
                         [0.00000000,  2.24084147e+00, -3.02713496e+00],
                         [0.00000000, -2.19124748e+00, -1.13016901e+00],
                         [0.00000000, -2.24084147e+00,-3.02713496e+00], 
-                        [0.00000000, -3.82399079e+00, -1.62836533e-01]])
-    grid = generate_grid(20, centers, ordre_choisi=101, r_m=0.5, units='bohr')
+                        [0.00000000, -3.82399079e+00, -0.162836533e-01]])
+    grid = generate_grid(20, centers, ordre_choisi=53, r_m=0.5, units='bohr')
     export_grid_for_multiwfn(grid, "urea_grid_multiwfn.txt", centers)
     plot_multicenter_grid(grid, centers)
 
