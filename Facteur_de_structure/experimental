@@ -4,8 +4,6 @@
 
 '''
 
-
-
 def produit_scalaire(G,j,rj): #G triplet (h,k,l) du réseau réciproque
     # j indice de l'atome j dans la maille directe
     #rj triplet (x,y,z) de la position de l'atome j dans la maille directe
