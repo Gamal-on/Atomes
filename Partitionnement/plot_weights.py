@@ -16,14 +16,14 @@ def plot_weight(grid, weight):
     color=weight,  # La couleur dépend du poids
     color_continuous_scale="Viridis",  # Échelle de couleur
     labels={"x": "X", "y": "Y", "z": "Z", "color": "Poids"},
-    title="Poids de Hirshfeld de l'Urée en 3D",)
+    title="Poids de Hirshfeld de l'atome d'oxygène (molécule d'urée)",
+    )
     fig.update_traces(marker=dict(size=2))
 
     fig.show()
 
 
 def main():
-    plot_weight(grid, weight_carbon_1)
     plot_weight(grid, weight_oxygen_2)
 
 if __name__ == "__main__":
