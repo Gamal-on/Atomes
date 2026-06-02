@@ -176,18 +176,3 @@ def plot_multicenter_grid(cart_array, centers_bohr):
     plt.show()
 
 
-def main() : 
-    centers = np.array([[0.00000000,  0.00000000,  0.27127625],
-                         [0.00000000, 0.00000000,  2.57183145], 
-                        [0.00000000,  2.19124748, -1.13016901], 
-                        [0.00000000, 3.82399079e+00, -0.162836533e-01], 
-                        [0.00000000,  2.24084147e+00, -3.02713496e+00],
-                        [0.00000000, -2.19124748e+00, -1.13016901e+00],
-                        [0.00000000, -2.24084147e+00,-3.02713496e+00], 
-                        [0.00000000, -3.82399079e+00, -0.162836533e-01]])
-    grid = generate_grid(20, centers, ordre_choisi=53, r_m=0.5, units='bohr')
-    export_grid_for_multiwfn(grid, "urea_grid_multiwfn.txt", centers)
-    plot_multicenter_grid(grid, centers)
-
-if __name__ == "__main__":
-    main()

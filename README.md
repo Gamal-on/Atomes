@@ -1,6 +1,12 @@
 # Atomes
 
+On génère par gaussian un fichier texte contenant les informations nécessaires au calcul de la densité électronique de la molécule d'urée, ainsi que la position des centres des atomes 
+
 Fichier de référence pour la strucutre électronique de la molécule d'urée et la position des centres des atomes : urea.wfn
+
+## Data
+
+Fonctions permettant l'extraction des paramètres de la molécule d'urée depuis le fichier wfn
 
 ## Grille
 

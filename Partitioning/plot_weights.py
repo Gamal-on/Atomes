@@ -4,9 +4,6 @@ from mpl_toolkits.mplot3d import Axes3D
 import pandas as pd
 import plotly.express as px
 
-from weights_arrays import grid, weight_carbon_1, weight_oxygen_2
-from weights_arrays import weight_azote_3, weight_hydrogen_4, weight_hydrogen_5, weight_azote_6, weight_hydrogen_7, weight_hydrogen_8
-
 
 def plot_weight(grid, weight):
     fig = px.scatter_3d(
@@ -21,10 +18,3 @@ def plot_weight(grid, weight):
     fig.update_traces(marker=dict(size=2))
 
     fig.show()
-
-
-def main():
-    plot_weight(grid, weight_oxygen_2)
-
-if __name__ == "__main__":
-    main()
