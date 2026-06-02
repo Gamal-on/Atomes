@@ -45,8 +45,8 @@ weight_hydrogen_8 = hirshfeld_weight(density_hydrogen_8, density_promolecule)
 
 
 
-def main() :
-    plot_weight(grid, weight_oxygen_2)
+def main(weight) :
+    plot_weight(grid, weight)
 
 if __name__ == "__main__":
-    main()
+    main(weight_oxygen_2)

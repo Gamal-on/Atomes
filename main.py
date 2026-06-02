@@ -19,4 +19,8 @@ if __name__ == "__main__":
 # export_grid_for_multiwfn(grid, "urea_grid_multiwfn.txt", centers)
 # plot_multicenter_grid(grid, centers)
 
-# Partitionnement
+# Partitionnement 
+
+# les fichiers de poids sont dans Data/
+# pour plot le poids d'un atome: main_partitioning
+
