@@ -12,9 +12,9 @@ state = ProjectState()
 
 state.centers, state.atom_dict = extract_urea_data("Multiwfn_Data/urea.txt")
 
-# Grid 
+# Grid : do not change the parameters, unless you are willing to generate new density files with Multiwfn
 
-state.grid = generate_grid(50, state.centers, 53)
+state.grid = generate_grid(19, state.centers, 53)
 
 
 # Parsing atomic densities info from Multiwfn_Data/Isolated_Densities
@@ -41,7 +41,9 @@ state.atom_dict = hirshfeld_weight(state.atom_dict, state.promolecule_density)
 
 # Exporting Hirshfedl weights
 
-# Plotting Hirshfeld weights
+# Plotting Hirshfeld weights : for the  atom number x, enter 
 
-grid_flat = state.grid.reshape(-1, 3)
-plot_weight(grid_flat, state.atom_dict[1]['hirshfeld_weight'])
+print(state.atom_dict)
+
+# grid_flat = state.grid.reshape(-1, 3)
+# plot_weight(grid_flat, state.atom_dict[1]['hirshfeld_weight'])

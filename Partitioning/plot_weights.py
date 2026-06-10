@@ -6,6 +6,7 @@ import plotly.express as px
 
 
 def plot_weight(grid, weight):
+    
     fig = px.scatter_3d(
     x=grid[:, 0],
     y=grid[:, 1],
