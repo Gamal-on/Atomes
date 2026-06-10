@@ -23,9 +23,7 @@ def extract_urea_data(file_path):
                 centers_table.append([x, y, z])
 
                 # Build the atom dictionary { Element: [Atom Numbers] }
-                if element not in atom_dict:
-                    atom_dict[element] = []
-                atom_dict[element].append(atom_num)
+                atom_dict[atom_num] = {'element': element}
 
     return centers_table, atom_dict
 

@@ -6,3 +6,5 @@ import numpy as np
 @dataclass
 class ProjectState:
     centers: np.ndarray = None
+    atom_dict: dict = field(default_factory=dict)
+    
