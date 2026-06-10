@@ -2,7 +2,7 @@
 
 ## Objective and Protocol
 
-Objective :
+Objective : Reconstruction of the structure factor of urea
 
 Protocol :
 
