@@ -2,10 +2,13 @@
 
 Fichier de référence pour la strucutre électronique de la molécule d'urée et la position des centres des atomes : urea.wfn
 
-Étape 1 : on prend les numéros des atomes et leurs nature dans atom_dict + leurs centres de urea.wfn 
-Étape 2 : on ajoute dans le dictionnaire les ddp pour chaque atom
-Étape 3 : on charge la promolécule
-Étape 4 : on calcule les poids de Hirshfeld + on les exporte 
+Étape 1 : on prend les numéros des atomes et leurs natures dans atom_dict + leurs centres de urea.wfn
+Étape 2 : on génère la grille, on l'exporte
+Étape 3 : on génère les densités électroniques atomiques sur la grille avec multiwfn
+Étape 4 : on ajoute dans le dictionnaire les ddp pour chaque atom
+Étape 5 : on charge la promolécule
+
+Étape 6 : on calcule les poids de Hirshfeld + on les exporte 
 
 ## Data
 

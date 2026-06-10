@@ -7,4 +7,5 @@ import numpy as np
 class ProjectState:
     centers: np.ndarray = None
     atom_dict: dict = field(default_factory=dict)
-    
+    promolecule_density: np.ndarray = None
+    grid_points: np.ndarray = None
