@@ -1,6 +1,6 @@
 import numpy as np
 
-def hirshfeld_weight(atom_dict: dict, density_promolecule: np.ndarray) -> None:
+def hirshfeld_weight(atom_dict: dict, density_promolecule: np.ndarray) :
     """Calculate the Hirshfeld weight for each atom based on the density of the atom and the promolecule.
     Modifies atom_dict in place by adding a 'hirshfeld_weight' entry for each atom.
     Arguments :
@@ -17,4 +17,4 @@ def hirshfeld_weight(atom_dict: dict, density_promolecule: np.ndarray) -> None:
         )
         atom_dict[atom_num]['hirshfeld_weight'] = poids
 
-        return atom_dict
+    return atom_dict
