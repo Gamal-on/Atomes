@@ -88,7 +88,7 @@ U = {
 #Comme H est très léger, il vibre davantage thermiquement (les Odg sont de l'ordre de 0.03–0.08 A˚2)
 #e-4 A^2
 #est ce qu'ils sont différents en fonction 
-
+#hh
 #B=8pi^2*(valeur moyenne de U^2) pour chaque atome à T=123K fixée ici
 
 B_database = {k: 8*(math.pi)**2*3.57106*v for k,v in U.items()}
