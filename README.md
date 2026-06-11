@@ -93,5 +93,27 @@ plot_weights.py: plots the Hirshfeld weights for a given atom
 
 ### Calculation of Scattering Factors
 
+In the Residual_densities folder
+
+The code is divided into several parts:
+
+Two files that retrieve the structure factors from the files 'FS expérimentaux.hkl' and 'FS Théorique + Phase.out':
+'Importation facteur de structure expérimentaux.py': retrieves the data from 'FS expérimentaux.hkl' and creates a dictionary stored in FS_expérimentaux_dict.py containing a list with the squared modulus of the experimental structure factors and the standard deviation of this measurement.
+
+'Importation facteur de structure théorique et phases.py': retrieves the data from 'FS Théorique + Phase.out' and creates two dictionaries stored in FS_théorique_dynamique_dict.py and FS_théorique_statique_dict.py, each containing a list with the real part, the imaginary part, and the theoretical phase of the structure factors.
+
+For 3D:
+Then we compute the Fourier transform on a 3D grid:
+
+'Calcul 3D Grid.py': This program computes the residual densities and stores them in the 3D grid 'delta_rho_flat.npz'
+
+Then we display the interactive 3D map:
+
+'Plot 3D.py': We can choose different saturation levels; we chose 10 e⁻/Å³ to prevent very high density values from distorting the display.
+
+For 2D:
+
+'Calcul 2D + Plot.py': Running this file, we are asked to choose one of the two molecule types, A or B, for which to display the residual density, then the (h, k, l) triplet of the molecule to display. The file returns the residual density, the position of the molecule within the unit cell in 3D, and the unit cell itself, to verify that we are plotting the correct crystal cell (initially we wanted to highlight the selected atom within the cell, but we haven't managed to do that yet).
+
 
 
