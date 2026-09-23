@@ -15,48 +15,54 @@ def generate_grid(radial_lenght, centers_coordinates, ordre_choisi, r_m=0.5, uni
     - centers_coordinates : list of coordinates of the centers (N x 3)
     - ordre_choisi : order of the Lebedev grid
     """
-
+    #conversion Bohr - Angström
     BOHR_TO_ANGSTROM = 0.5291772108
 
-    # Loading lebedev data
+    # On va chercher les poids de Lebedev
     directory_script = Path(__file__).parent
     file_name = f"lebedev_{ordre_choisi}.txt"
     path_complete = directory_script / file_name
-
+    # on distingue le c&as où l'ordre de Lebedev n'existe pas
     try:
         lebedev_data_array = np.loadtxt(path_complete)
     except FileNotFoundError:
         print(f"Erreur : Le fichier {file_name} est introuvable.")
         return None
-
+    #on récupère les angles de Lebedev (theta et phi) et on obtient des listes
     phi = lebedev_data_array[:, 0]
     theta = lebedev_data_array[:, 1]
 
-    # Generating radial points (Gauss-Chebyshev type)
+    # création des r_i pour la grille radiale 
     i_range = np.arange(1, radial_lenght+1)
     x_i = np.cos(np.pi * i_range / (radial_lenght + 1))
     r_i = r_m * (1 + x_i) / (1 - x_i)
 
 
-    # Cartesian coordinates on the unit sphere
+    # On crée 3 tableaux pour avoir les X,Y,Z sur la sphère unité
     X_unit = np.sin(theta) * np.cos(phi)
     Y_unit = np.sin(theta) * np.sin(phi)
     Z_unit = np.cos(theta)
 
-    # Combinaison radial x angular
+    # On obtient tous les points X,Y,Z possible en combinant distances et angles
     X_rel = (r_i[:, np.newaxis] * X_unit[np.newaxis, :]).ravel()
     Y_rel = (r_i[:, np.newaxis] * Y_unit[np.newaxis, :]).ravel()
     Z_rel = (r_i[:, np.newaxis] * Z_unit[np.newaxis, :]).ravel()
     
+    #on flatten chaque matrice de taille MxN pour obtenir une matrice de taille (MN,3) (on superopose les lignes)
+    
     grille_relative = np.column_stack((X_rel, Y_rel, Z_rel))
 
-    # Translation of the grid on each center
+    # on stocke les centres atomiques dans des tableaux dans une matrice (A,3) où A est le nombre d'atomes
     coords_matrice = np.array(centers_coordinates)
-
+    #distinction si unité en Bohr 
     if units == 'bohr':
         coords_matrice = coords_matrice * BOHR_TO_ANGSTROM
-    
-    # Final resulat
+
+    # On génère un tableau final : 
+    #grille relative --> devient (1,P,3)
+    #coords_matrice devient (A,1,3)
+    #on optient un tenseur (A,P,3)
+    #cart_array[0]=(P,3) centrée sur le premier atome, etc.... 
     cart_array = grille_relative[np.newaxis, :, :] + coords_matrice[:, np.newaxis, :]
     
     return cart_array
@@ -72,22 +78,24 @@ def export_grid_for_multiwfn(cart_array, output_path, centers_bohr, r_cutoff=50.
     - r_cutoff : distance max en Bohr à partir de l'atome le plus proche
     """
     ANGSTROM_TO_BOHR = 1.8897259886
-
+    #on flatten la matrice cart_array pour avoir une matrice (N_Atoms*N_points)
     all_points = cart_array.reshape(-1, 3) * ANGSTROM_TO_BOHR
     centers = np.array(centers_bohr)  # (N_atoms, 3) en Bohr
 
-    # Distance minimale de chaque point à n'importe quel atome
+    #on cherche à avoir la distance entre le point p et le numéro atomique a dist[p,a]
     dists = np.linalg.norm(
         all_points[:, np.newaxis, :] - centers[np.newaxis, :, :],
         axis=2
     )  # shape (N_points, N_atoms)
+    #on cherche l'atome le plus proche de chaque point p
     min_dist = dists.min(axis=1)
-
+    #on instaure un cutoff (si un point est trop lointain de son atome le plus proche, on l'élimine )
     mask = min_dist <= r_cutoff
+    #on applique le filtre 
     filtered = all_points[mask]
 
     print(f"Points avant cutoff : {len(all_points)}, après : {len(filtered)}")
-
+    #on l'écrit en fichier multiwfn
     with open(output_path, 'w') as f:
         f.write(f"{len(filtered)}\n")
         for x, y, z in filtered:
@@ -95,7 +103,7 @@ def export_grid_for_multiwfn(cart_array, output_path, centers_bohr, r_cutoff=50.
 
 def plot_grid_tenser(cart_array):
     """
-    Affiche la grille 3D générée.
+    Affiche la grille 3D générée autour d'un seul point.
     """
     if cart_array is None:
         return
@@ -126,6 +134,9 @@ def plot_grid_tenser(cart_array):
 
 
 def plot_multicenter_grid(cart_array, centers_bohr):
+    """
+        Génère la grille "finale", avec la molécule totale.
+    """
     ANGSTROM_TO_BOHR = 1.8897259886
     n_atoms = cart_array.shape[0]
     
@@ -175,4 +186,26 @@ def plot_multicenter_grid(cart_array, centers_bohr):
         
     plt.show()
 
+#on affiche la grille
 
+# 1. Définir les coordonnées des centres atomiques (ici en Bohr)
+coordonnees_atomes = [
+    [0.0, 0.0, 0.0],  # Centre de l'atome 1
+    [0.0, 0.0, 1.4]   # Centre de l'atome 2 (espacé de 1.4 Bohr sur l'axe Z)
+]
+
+# 2. Paramètres de la grille
+nombre_points_radiaux = 10  # radial_lenght : nombre de couches concentriques
+ordre_lebedev = 14          # ordre_choisi : doit correspondre à un fichier "lebedev_14.txt" que tu possèdes
+
+# 3. Génération de la grille (le tenseur 3D)
+tab = generate_grid(
+    radial_lenght=nombre_points_radiaux, 
+    centers_coordinates=coordonnees_atomes, 
+    ordre_choisi=ordre_lebedev
+)
+
+# 4. Affichage de la grille
+# On vérifie que le fichier Lebedev a bien été trouvé et que "tab" n'est pas None
+if tab is not None:
+    plot_multicenter_grid(cart_array=tab, centers_bohr=coordonnees_atomes)
