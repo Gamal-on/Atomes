@@ -51,5 +51,4 @@ state.atom_dict = hirshfeld_weight(state.atom_dict, state.promolecule_density)
 # Plotting Hirshfeld weights : for the  atom number x, enter 
 
 grid_flat = state.grid.reshape(-1, 3)
-plot_weight(grid_flat,state.atom_dict)
-
+#plot_weight(grid_flat,state.atom_dict)
