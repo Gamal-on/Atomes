@@ -52,6 +52,3 @@ state.atom_dict = hirshfeld_weight(state.atom_dict, state.promolecule_density)
 
 grid_flat = state.grid.reshape(-1, 3)
 #plot_weight(grid_flat,state.atom_dict)
-
-if __name__ == "__main__":
-    print(state.atom_dict[1]['coords'], state.atom_dict[2]['coords'], state.atom_dict[3]['coords'])
