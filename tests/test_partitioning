@@ -1,0 +1,15 @@
+import numpy as np
+import pytest
+
+def test_coord_lengths_consistent(atom_dict):
+    """Toutes les arrays 'coord' doivent avoir la même taille (même grille)."""
+    tailles = {nom: len(atome["coord"]) for nom, atome in atom_dict.items()}
+    assert len(set(tailles.values())) == 1, f"Tailles de 'coord' incohérentes : {tailles}"
+
+
+def test_hirshfeld_weights_sum_to_one(atom_dict):
+    """En chaque point de la grille, la somme des poids de Hirshfeld doit valoir 1."""
+    weights_sum = sum(atome["weight"] for atome in atom_dict.values())
+    assert np.allclose(weights_sum, 1.0), (
+        f"Écart max à 1 : {np.max(np.abs(weights_sum - 1)):.2e}"
+    )
