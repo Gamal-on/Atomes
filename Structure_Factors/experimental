@@ -123,7 +123,7 @@ def fonction_expiGr(G, rj):
 
 def Facteur_de_structure(G, liste_atomes, liste_FD):
     """
-    G : vecteur réciproque
+    G : vecteur réciproque    liste de triplets?
     liste_atomes : liste de dictionnaires avec au moins {'position': (x,y,z)}
     liste_FD : liste des f_j(G) correspondants
 
