@@ -1,4 +1,12 @@
+import os
+import sys
 import numpy as np
+
+if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 
 def load_hkl(filepath):
     """
@@ -7,7 +15,7 @@ def load_hkl(filepath):
     """
     hkl_data = {}
     
-    with open(filepath, 'r') as f:
+    with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
         lines = f.readlines()
     
     # On cherche le début des données (après l'en-tête)
@@ -60,7 +68,15 @@ def query_hkl(hkl_data, h, k, l):
 
 # --- Utilisation ---
 if __name__ == "__main__":
-    filepath = "C:\\Users\\damie\\Documents\\Projet Wigner Function\\Données facteurs de structures\\FS expérimentaux.hkl"
+    if len(sys.argv) > 1:
+        filepath = sys.argv[1]
+    else:
+        filepath = "C:\\Users\\damie\\Documents\\Projet Wigner Function\\Données facteurs de structures\\FS expérimentaux.hkl"
+        if not os.path.exists(filepath):
+            # Chemin alternatif dans le dépôt Atome
+            repo_path = os.path.join(os.path.dirname(__file__), "..", "Data_FS", "FS expérimentaux.hkl")
+            if os.path.exists(repo_path):
+                filepath = os.path.abspath(repo_path)
     
     # Chargement
     hkl_data = load_hkl(filepath)

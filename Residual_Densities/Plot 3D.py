@@ -6,11 +6,31 @@ Created on Thu May  7 11:13:10 2026
 # ==============================================================
 # SCRIPT D'AFFICHAGE SEUL — charge les données sans recalculer
 # ==============================================================
+import os
+import sys
 import numpy as np
 import plotly.graph_objects as go
 import plotly.io as pio
 
-data   = np.load('delta_rho_flat.npz')
+if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
+
+npz_path = 'delta_rho_flat.npz'
+if not os.path.exists(npz_path) and '__file__' in globals():
+    local_path = os.path.join(os.path.dirname(__file__), 'delta_rho_flat.npz')
+    if os.path.exists(local_path):
+        npz_path = local_path
+
+if not os.path.exists(npz_path):
+    raise FileNotFoundError(
+        f"Le fichier '{npz_path}' est introuvable. "
+        "Veuillez d'abord exécuter 'Calcul 3D Grid.py' pour générer les données."
+    )
+
+data   = np.load(npz_path)
 x_flat = data['x_flat']
 y_flat = data['y_flat']
 z_flat = data['z_flat']

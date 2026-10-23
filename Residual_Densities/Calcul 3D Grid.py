@@ -2,8 +2,16 @@
 """
 Calcul et affichage 3D de la densité résiduelle Delta_rho
 """
+import os
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
+
+if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 
 # === IMPORTS ===
 from FS_expérimentaux_dict import *
@@ -85,7 +93,7 @@ dmin3, dmax3 = lmin * c, lmax * c
 # vérification que les clés sont communes aux trois dicts
 common_keys = (set(FS_théorique_dynamique)
                & set(FS_théorique_statique)
-               #& set(FS_expérimentaux)"    
+               # & set(FS_expérimentaux)
                ) - {(0, 0, 0)} # On exclue la réflection directe
 
 missing = set(FS_théorique_dynamique) - common_keys
@@ -171,11 +179,12 @@ print("="*40)
 # ==============================================================
 # SAUVEGARDE DE x_flat, y_flat, z_flat, v_flat
 # ==============================================================
-np.savez('delta_rho_flat.npz',
+save_path = os.path.join(os.path.dirname(__file__), 'delta_rho_flat.npz') if '__file__' in globals() else 'delta_rho_flat.npz'
+np.savez(save_path,
          x_flat=x_flat,
          y_flat=y_flat,
          z_flat=z_flat,
          v_flat=v_flat)
-print("Données plates sauvegardées dans delta_rho_flat.npz")
+print(f"Données plates sauvegardées dans {save_path}")
 
 

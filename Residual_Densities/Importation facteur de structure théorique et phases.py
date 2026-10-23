@@ -10,8 +10,15 @@ Usage :
 
 import re
 import math
+import os
 import sys
 from collections import defaultdict
+
+if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 
 
 def parse_structure_factors(filepath, section="static"):
@@ -112,7 +119,14 @@ def parse_structure_factors(filepath, section="static"):
 # ── Exemple d'utilisation ──────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    filepath = "C:\\Users\\damie\\Documents\\Projet Wigner Function\\Données facteurs de structures\\FS Théorique + Phase.out"
+    if len(sys.argv) > 1:
+        filepath = sys.argv[1]
+    else:
+        filepath = "C:\\Users\\damie\\Documents\\Projet Wigner Function\\Données facteurs de structures\\FS Théorique + Phase.out"
+        if not os.path.exists(filepath):
+            local_path = os.path.join(os.path.dirname(__file__), "FS Théorique + Phase.out")
+            if os.path.exists(local_path):
+                filepath = os.path.abspath(local_path)
 
     print(f"Lecture du fichier : {filepath}\n")
 

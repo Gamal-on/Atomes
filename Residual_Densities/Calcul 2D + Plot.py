@@ -10,9 +10,16 @@ SÉLECTION DE LA MOLÉCULE :
   de h mailles selon a, k mailles selon b, l mailles selon c.
 """
 
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as pe
+
+if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 
 # === IMPORTS ===
 from FS_expérimentaux_dict import *
@@ -429,7 +436,6 @@ print(f"  Résolution de la grille : {pas} Å")
 print(f"  Taille de la grille     : {Nu} × {Nv} points")
 print("="*55)
 
-plt.show()
 
 # ==============================================================
 # AFFICHAGE 3D DES ATOMES DE LA MOLÉCULE SÉLECTIONNÉE
@@ -569,12 +575,12 @@ def draw_all_molecules(n_mailles, highlight_sel=True):
     molécules = get_all_molecules(n_mailles)
     scatter_handles.clear()
 
-    for base_type, h_, k_, l_, mol in molécules:
+    for b_type, h_, k_, l_, mol in molécules:
         atomes_list = mol['atomes']
         positions   = np.array([at['cart'] for at in atomes_list])
 
         # Mise en évidence de la molécule sélectionnée initialement
-        is_selected = (base_type == base_type and h_ == h and k_ == k and l_ == l)
+        is_selected = (b_type == base_type and h_ == h and k_ == k and l_ == l)
         edge_col    = 'yellow' if (highlight_sel and is_selected) else 'k'
         edge_lw     = 2.0      if (highlight_sel and is_selected) else 0.5
 
@@ -584,7 +590,7 @@ def draw_all_molecules(n_mailles, highlight_sel=True):
             p1 = positions[i_at]
             p2 = positions[j_at]
             ax3d.plot([p1[0], p2[0]], [p1[1], p2[1]], [p1[2], p2[2]],
-                      color=BOND_COLOR[base_type], lw=1.2, alpha=ALPHA_BOND, zorder=3)
+                      color=BOND_COLOR[b_type], lw=1.2, alpha=ALPHA_BOND, zorder=3)
 
         # --- Atomes ---
         for at in atomes_list:
@@ -632,4 +638,5 @@ def draw_all_molecules(n_mailles, highlight_sel=True):
 
 # Premier rendu
 draw_all_molecules(N_MAILLES)
+plt.show()
 
