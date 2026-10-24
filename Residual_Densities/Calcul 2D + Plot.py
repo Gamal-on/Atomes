@@ -319,7 +319,7 @@ levels_pos  = np.linspace(0, vmax, 12)[1:]
 levels_neg  = np.linspace(-vmax, 0, 12)[:-1]
 
 cf = ax.contourf(u_vals, v_vals, values_2D.T,
-                 levels=levels_fill, cmap='RdBu', extend='both')
+                 levels=levels_fill, cmap='RdBu_r', extend='both')
 
 ct_pos = ax.contour(u_vals, v_vals, values_2D.T,
                     levels=levels_pos, colors='#CC2222',
@@ -349,17 +349,6 @@ SIZES_ATOM  = {'C': 220, 'O': 260, 'N': 240, 'H': 120, 'Ti': 350}
 # Seuils de distance 3D pour tracer une liaison (en Å)
 SEUIL_LIAISON = 1.75   # liaisons lourds–lourds
 SEUIL_XH      = 1.30   # liaisons X–H
-
-atomes_u, atomes_v, atomes_label, atomes_symbol = [], [], [], []
-
-for at in mol_sel['atomes']:
-    diff   = at['cart'] - centre
-    u_proj = np.dot(diff, u_axis)
-    v_proj = np.dot(diff, v_axis)
-    atomes_u.append(u_proj)
-    atomes_v.append(v_proj)
-    atomes_label.append(at['label'])
-    atomes_symbol.append(at['symbol'])
 
 # --- Liaisons (seuil sur distance 3D cartésienne) ---
 n_at = len(mol_sel['atomes'])
@@ -455,14 +444,21 @@ xs = positions_cart[:, 0]
 ys = positions_cart[:, 1]
 zs = positions_cart[:, 2]
 
-# --- Liaison simple : chaque paire d'atomes consécutifs ---
-# (même logique que la vue 2D ; pour des liaisons réelles,
-#  il faudrait un seuil de distance ou une table de connectivité)
-for i in range(len(mol_sel['atomes']) - 1):
-    p1 = mol_sel['atomes'][i]['cart']
-    p2 = mol_sel['atomes'][i + 1]['cart']
-    ax3d.plot([p1[0], p2[0]], [p1[1], p2[1]], [p1[2], p2[2]],
-              'w-', lw=1.5, alpha=0.6, zorder=3)
+# --- Liaisons 3D (seuil sur distance cartésienne) ---
+n_at_3d = len(mol_sel['atomes'])
+for i in range(n_at_3d):
+    for j in range(i + 1, n_at_3d):
+        sym_i = mol_sel['atomes'][i]['symbol']
+        sym_j = mol_sel['atomes'][j]['symbol']
+        d3d = np.linalg.norm(
+            mol_sel['atomes'][i]['cart'] - mol_sel['atomes'][j]['cart']
+        )
+        seuil = SEUIL_XH if 'H' in {sym_i, sym_j} else SEUIL_LIAISON
+        if d3d < seuil:
+            p1 = mol_sel['atomes'][i]['cart']
+            p2 = mol_sel['atomes'][j]['cart']
+            ax3d.plot([p1[0], p2[0]], [p1[1], p2[1]], [p1[2], p2[2]],
+                      'w-', lw=2.0, alpha=0.8, zorder=3)
 
 # --- Atomes ---
 for at in mol_sel['atomes']:
