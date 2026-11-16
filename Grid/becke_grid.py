@@ -186,3 +186,26 @@ def plot_multicenter_grid(cart_array, centers_bohr):
         
     plt.show()
 
+#on affiche la grille
+
+# 1. Définir les coordonnées des centres atomiques (ici en Bohr)
+coordonnees_atomes = [
+    [0.0, 0.0, 0.0],  # Centre de l'atome 1
+    [0.0, 0.0, 1.4]   # Centre de l'atome 2 (espacé de 1.4 Bohr sur l'axe Z)
+]
+
+# 2. Paramètres de la grille
+nombre_points_radiaux = 10  # radial_lenght : nombre de couches concentriques
+ordre_lebedev = 14          # ordre_choisi : doit correspondre à un fichier "lebedev_14.txt" que tu possèdes
+
+# 3. Génération de la grille (le tenseur 3D)
+tab = generate_grid(
+    radial_lenght=nombre_points_radiaux, 
+    centers_coordinates=coordonnees_atomes, 
+    ordre_choisi=ordre_lebedev
+)
+
+# 4. Affichage de la grille
+# On vérifie que le fichier Lebedev a bien été trouvé et que "tab" n'est pas None
+if tab is not None:
+    plot_multicenter_grid(cart_array=tab, centers_bohr=coordonnees_atomes)
