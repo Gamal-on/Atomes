@@ -1,10 +1,10 @@
 import numpy as np
 import pytest
 
-def test_coord_lengths_consistent(atom_dict):
-    """Toutes les arrays 'coord' doivent avoir la même taille (même grille)."""
-    tailles = {nom: len(atome["coords"]) for nom, atome in atom_dict.items()}
-    assert len(set(tailles.values())) == 1, f"Tailles de 'coord' incohérentes : {tailles}"
+def test_rho_lengths_consistent(atom_dict):
+    """Toutes les arrays 'rho' doivent avoir la même taille (même grille)."""
+    tailles = {nom: len(atome["rho"]) for nom, atome in atom_dict.items()}
+    assert len(set(tailles.values())) == 1, f"Tailles de 'rho' incohérentes : {tailles}"
 
 
 def test_hirshfeld_weights_sum_to_one(atom_dict):
