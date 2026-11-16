@@ -4,9 +4,8 @@ from pathlib import Path
 # Importation de la fonction génératrice
 from becke_grid import generate_grid
 
-
+#w_irsh est un tableau qui donne les poids 
 #préparation grille et poids 
-
 def preparer_grille_et_poids(coords_liste, P=100, ordre_choisi=53, r_m=0.5, w_hirsh):
     """
     Génère les points de la grille et calcule le poids total pour chaque point

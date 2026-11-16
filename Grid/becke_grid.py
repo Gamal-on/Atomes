@@ -29,8 +29,8 @@ def generate_grid(radial_lenght, centers_coordinates, ordre_choisi, r_m=0.5, uni
         print(f"Erreur : Le fichier {file_name} est introuvable.")
         return None
     #on récupère les angles de Lebedev (theta et phi) et on obtient des listes
-    phi = lebedev_data_array[:, 0]
-    theta = lebedev_data_array[:, 1]
+    phi = lebedev_data_array[:, 0]*np.pi/180
+    theta = lebedev_data_array[:, 1]*np.pi/180
 
     # création des r_i pour la grille radiale 
     i_range = np.arange(1, radial_lenght+1)
@@ -190,13 +190,13 @@ def plot_multicenter_grid(cart_array, centers_bohr):
 
 # 1. Définir les coordonnées des centres atomiques (ici en Bohr)
 coordonnees_atomes = [
-    [0.0, 0.0, 0.0],  # Centre de l'atome 1
-    [0.0, 0.0, 1.4]   # Centre de l'atome 2 (espacé de 1.4 Bohr sur l'axe Z)
+    [0.0, 0.0, 0.0], 
+    [0.0, 0.0, 1.4] # Centre de l'atome 1
 ]
 
 # 2. Paramètres de la grille
 nombre_points_radiaux = 10  # radial_lenght : nombre de couches concentriques
-ordre_lebedev = 14          # ordre_choisi : doit correspondre à un fichier "lebedev_14.txt" que tu possèdes
+ordre_lebedev = 15          # ordre_choisi : doit correspondre à un fichier "lebedev_14.txt" que tu possèdes
 
 # 3. Génération de la grille (le tenseur 3D)
 tab = generate_grid(
