@@ -1,6 +1,8 @@
 import re
 
-def extract_urea_data(file_path):
+import numpy as np
+
+def extract_centers_atoms(file_path):
     # List of lists to store the rows of centers
     centers_table = []
     # Dictionary to group atoms and their corresponding numbers
@@ -18,13 +20,18 @@ def extract_urea_data(file_path):
                 x = float(match.group(4))
                 y = float(match.group(5))
                 z = float(match.group(6))
+                charge = float(match.group(7))
 
                 # Build the centers table as a list of lists (table of tables)
                 centers_table.append([x, y, z])
 
-                # Build the atom dictionary { Element: [Atom Numbers] }
-                atom_dict[atom_num] = {'element': element}
+                # Build the atom dictionary {atom_num: {'element', 'Z', 'center'}}
+                atom_dict[atom_num] = {
+                    'element': element,
+                    'Z': charge,
+                    'center': np.array([x, y, z]),
+                }
 
-    return centers_table, atom_dict
+    return np.array(centers_table), atom_dict
 
 

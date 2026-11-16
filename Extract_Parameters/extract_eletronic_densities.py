@@ -1,6 +1,6 @@
 import numpy as np
 
-def load_density(filepath: str, atom_dict: dict) -> None:
+def load_electronic_density(filepath: str, atom_dict: dict) -> None:
     with open(filepath, 'r') as f:
         lines = f.readlines()
 
@@ -14,8 +14,7 @@ def load_density(filepath: str, atom_dict: dict) -> None:
     )
 
     # Data
-    data = np.loadtxt(filepath, skiprows=1)
-    atom_dict[number]['coords'] = data[:, :3]
-    atom_dict[number]['rho']    = data[:, 3]
+    # Only the density column is kept: the grid points are the same for every atom
+    atom_dict[number]['rho'] = np.loadtxt(filepath, skiprows=1, usecols=3)
 
     return atom_dict
